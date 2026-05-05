@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HobbyHive | Find Your Focus</title>
+    <link rel="stylesheet" href="splash.css">
+    <!-- Load GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+    <div class="splash-container">
+        <!-- Background Chaos Scene -->
+        <div class="bg-chaos" id="chaosBg"></div>
+        <div class="overlay-gradient"></div>
+
+        <!-- Text Layers -->
+        <div class="text-layer">
+            <div class="chaos-text" id="text1">Lost track of time?</div>
+            <div class="chaos-text" id="text2">Overwhelmed by hobbies?</div>
+        </div>
+
+        <!-- The Hive Element -->
+        <div class="hive-symbol" id="hiveSymbol">
+            <span class="hive-icon">H</span>
+        </div>
+
+        <!-- Resolution -->
+        <div class="resolution-text" id="resolutionText">Enter the Hive.</div>
+        <a href="main.html" class="enter-btn" id="enterBtn">Initialize</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const tl = gsap.timeline();
+
+            // Scene 1: Chaos Background Appears
+            tl.to("#chaosBg", { opacity: 0.6, scale: 1, duration: 3, ease: "power2.out" })
+              
+              // Text 1
+              .to("#text1", { opacity: 1, scale: 1.1, duration: 1.5, ease: "power2.out" }, "-=2")
+              .to("#text1", { opacity: 0, scale: 1.2, duration: 1 }, "+=1")
+              
+              // Text 2
+              .to("#text2", { opacity: 1, scale: 1.1, duration: 1.5, ease: "power2.out" })
+              .to("#text2", { opacity: 0, scale: 1.2, duration: 1 }, "+=1")
+
+              // Scene 2: The Hive Emerges
+              .to("#chaosBg", { filter: "blur(20px)", opacity: 0.2, duration: 2 }, "hive")
+              .to("#hiveSymbol", { 
+                  opacity: 1, 
+                  scale: 1, 
+                  rotation: 360, 
+                  boxShadow: "0 0 80px rgba(139, 92, 246, 0.8)", 
+                  duration: 2, 
+                  ease: "back.out(1.7)" 
+              }, "hive")
+
+              // Scene 3: Resolution & CTA
+              .to("#resolutionText", { opacity: 1, y: -20, duration: 1.5, ease: "power3.out" }, "+=0.5")
+              .to("#enterBtn", { opacity: 1, y: -10, duration: 1, ease: "power2.out" }, "-=0.5");
+        });
+    </script>
+</body>
+</html>
