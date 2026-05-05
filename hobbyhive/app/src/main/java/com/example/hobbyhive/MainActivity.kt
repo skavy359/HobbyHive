@@ -5,43 +5,69 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.hobbyhive.data.HobbyHiveDatabase
+import com.example.hobbyhive.data.HobbyRepository
+import com.example.hobbyhive.data.UserPreferencesRepository
+import com.example.hobbyhive.data.UserRepository
+import com.example.hobbyhive.ui.navigation.NavGraph
 import com.example.hobbyhive.ui.theme.HobbyhiveTheme
+import com.example.hobbyhive.util.RequestNotificationPermission
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Android 12+ Splash Screen API
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Initialize dependencies
+        val database = HobbyHiveDatabase.getDatabase(applicationContext)
+        val userPreferencesRepository = UserPreferencesRepository(applicationContext)
+        val userRepository = UserRepository(database.userDao())
+        val hobbyRepository = HobbyRepository(database.hobbyDao())
+
+        // Keep splash screen visible briefly
+        var keepSplashVisible = true
+        splashScreen.setKeepOnScreenCondition { keepSplashVisible }
+
         setContent {
-            HobbyhiveTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+            // Read theme preference
+            val themeMode by userPreferencesRepository.themeMode.collectAsState(initial = "system")
+            val isDarkTheme = when (themeMode) {
+                "dark" -> true
+                "light" -> false
+                else -> androidx.compose.foundation.isSystemInDarkTheme()
+            }
+
+            // Dismiss system splash once Compose is ready
+            LaunchedEffect(Unit) {
+                keepSplashVisible = false
+            }
+
+            HobbyhiveTheme(darkTheme = isDarkTheme) {
+                // Request notification permission on first launch
+                RequestNotificationPermission()
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    NavGraph(
+                        navController = navController,
+                        userPreferencesRepository = userPreferencesRepository,
+                        userRepository = userRepository,
+                        hobbyRepository = hobbyRepository
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HobbyhiveTheme {
-        Greeting("Android")
     }
 }
