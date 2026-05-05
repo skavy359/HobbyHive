@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -53,8 +55,13 @@ fun LoginScreen(
             emailError = "Email cannot be empty"
             return false
         }
-        if (password.isBlank()) {
-            passwordError = "Password cannot be empty"
+        val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        if (!emailRegex.matches(email.trim())) {
+            emailError = "Enter a valid email"
+            return false
+        }
+        if (password.length < 8) {
+            passwordError = "Password must be at least 8 characters"
             return false
         }
         return true
@@ -70,7 +77,11 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(60.dp))
-            Text("🐝", style = MaterialTheme.typography.displayLarge)
+            androidx.compose.foundation.Image(
+                painter = androidx.compose.ui.res.painterResource(id = com.example.hobbyhive.R.drawable.logo),
+                contentDescription = "HobbyHive Logo",
+                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp))
+            )
             Spacer(Modifier.height(16.dp))
             HobbyText(
                 text = "Welcome Back",
@@ -135,9 +146,6 @@ fun LoginScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.weight(1f))
-                        TextButton(onClick = { /* Handle Forgot Password */ }) {
-                            Text("Forgot Password?", color = MaterialTheme.colorScheme.primary)
-                        }
                     }
 
                     if (generalError != null) {
