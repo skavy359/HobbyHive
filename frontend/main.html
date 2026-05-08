@@ -1,132 +1,836 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HobbyHive | Master Your Passions</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- GSAP for scroll animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HobbyHive — Track. Grow. Master.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --void:#04020f;
+  --surface:#0d0a1e;
+  --surface2:#140e2a;
+  --hive:#f5a623;
+  --hive2:#ff6b35;
+  --hive3:#ffd166;
+  --violet:#7c3aed;
+  --fuchsia:#e040fb;
+  --cyan:#00e5ff;
+  --green:#06d6a0;
+  --white:#f0eaff;
+  --muted:rgba(240,234,255,.45);
+  --border:rgba(245,166,35,.15);
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--white);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+#cur{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--hive);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 16px var(--hive);}
+#cur-r{position:fixed;width:32px;height:32px;border-radius:50%;border:1px solid rgba(245,166,35,.35);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .07s ease-out;}
+#mesh-bg{
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+  background:var(--void);
+}
+.mesh-blob{
+  position:absolute;border-radius:50%;filter:blur(80px);
+  animation:blobDrift var(--bd) ease-in-out infinite alternate;
+  opacity:.35;
+}
+@keyframes blobDrift{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(var(--bx),var(--by)) scale(var(--bs));}
+}
+#dot-grid{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image: radial-gradient(circle, rgba(245,166,35,.18) 1px, transparent 1px);
+  background-size:32px 32px;
+  animation:gridMove 30s linear infinite;
+  opacity:.6;
+}
+@keyframes gridMove{
+  0%{background-position:0 0;}
+  100%{background-position:32px 32px;}
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.4;
+}
+#app{position:relative;z-index:3;}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:rgba(4,2,15,.7);
+  backdrop-filter:blur(20px);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:.8rem;
+  font-size:1.3rem;font-weight:800;letter-spacing:.02em;
+}
+.nav-logo .hex-icon{
+  width:32px;height:32px;
+  animation:hexNavPulse 3s ease-in-out infinite;
+}
+@keyframes hexNavPulse{
+  0%,100%{filter:drop-shadow(0 0 6px var(--hive));}
+  50%{filter:drop-shadow(0 0 14px var(--hive2));}
+}
+.nav-links{display:flex;gap:2.5rem;align-items:center;}
+.nav-links a{
+  font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  font-family:'Space Mono',monospace;
+  transition:color .2s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;
+  background:var(--hive);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.nav-links a:hover{color:var(--hive);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-cta{
+  padding:.6rem 1.6rem;
+  background:var(--hive);color:var(--void);
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  border:none;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+  transition:background .3s,transform .2s;
+  text-decoration:none;
+}
+.nav-cta:hover{background:var(--hive2);transform:scale(1.04);}
+#hero{
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+  align-items:center;padding:8rem 5rem 4rem;
+  position:relative;
+}
+.hero-left{z-index:5;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.4rem 1rem;
+  border:1px solid var(--border);
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hive);margin-bottom:2rem;
+  background:rgba(245,166,35,.05);
+  animation:badgePop .8s cubic-bezier(.22,1,.36,1) forwards;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:dotBlink 1.4s ease-in-out infinite;}
+@keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:.2;}}
+@keyframes badgePop{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.hero-h1{
+  font-size:clamp(2.6rem,4.5vw,5rem);
+  font-weight:800;line-height:1.05;
+  margin-bottom:1.6rem;
+  animation:fadeUp .9s ease .2s both;
+}
+.hero-h1 .line2{
+  background:linear-gradient(90deg,var(--hive),var(--fuchsia),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-size:200%;
+  animation:fadeUp .9s ease .2s both, gradShift 4s ease-in-out infinite;
+}
+@keyframes gradShift{0%,100%{background-position:0%;}50%{background-position:100%;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.hero-sub{
+  font-family:'Space Mono',monospace;
+  font-size:clamp(.8rem,1.2vw,.95rem);
+  color:var(--muted);line-height:1.8;
+  max-width:480px;margin-bottom:2.6rem;
+  animation:fadeUp .9s ease .4s both;
+}
+.hero-actions{
+  display:flex;gap:1.2rem;align-items:center;
+  animation:fadeUp .9s ease .55s both;
+}
+.btn-primary{
+  padding:.9rem 2.2rem;
+  background:linear-gradient(135deg,var(--hive),var(--hive2));
+  color:var(--void);font-weight:700;
+  font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;
+  border:none;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  position:relative;overflow:hidden;
+  transition:transform .2s,filter .2s;
+  text-decoration:none;display:inline-block;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--hive3),var(--fuchsia));
+  opacity:0;transition:opacity .3s;
+}
+.btn-primary:hover{transform:scale(1.04);filter:brightness(1.1);}
+.btn-primary:hover::before{opacity:1;}
+.btn-primary span{position:relative;z-index:1;}
+.btn-ghost{
+  padding:.9rem 2rem;background:transparent;
+  border:1px solid rgba(245,166,35,.35);
+  color:var(--muted);font-size:.88rem;
+  font-family:'Syne',sans-serif;cursor:none;
+  transition:border-color .2s,color .2s;
+  letter-spacing:.05em;
+  text-decoration:none;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--hive);color:var(--white);}
+.hero-stats{
+  display:flex;gap:2.5rem;margin-top:3rem;
+  padding-top:2rem;border-top:1px solid var(--border);
+  animation:fadeUp .9s ease .7s both;
+}
+.stat-item{}
+.stat-num{
+  font-size:1.8rem;font-weight:800;
+  background:linear-gradient(90deg,var(--hive),var(--hive2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-label{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:.2rem;}
+.hero-right{
+  z-index:5;
+  animation:dashboardReveal 1.2s cubic-bezier(.22,1,.36,1) .3s both;
+}
+@keyframes dashboardReveal{
+  from{opacity:0;transform:translateX(60px) rotateY(-12deg);}
+  to{opacity:1;transform:translateX(0) rotateY(0);}
+}
+.dashboard{
+  background:rgba(13,10,30,.9);
+  border:1px solid rgba(245,166,35,.2);
+  border-radius:16px;
+  padding:1.6rem;
+  box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(245,166,35,.06);
+  backdrop-filter:blur(10px);
+  position:relative;overflow:hidden;
+}
+.dashboard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--hive),transparent);
+  animation:scanLine 3s ease-in-out infinite;
+}
+@keyframes scanLine{
+  0%{transform:translateX(-100%);}
+  100%{transform:translateX(100%);}
+}
+.dash-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.4rem;padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+}
+.dash-title{font-size:.75rem;font-family:'Space Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--hive);}
+.dash-dots{display:flex;gap:.4rem;}
+.dash-dot{width:8px;height:8px;border-radius:50%;}
+.hobby-list{display:flex;flex-direction:column;gap:.9rem;margin-bottom:1.4rem;}
+.hobby-item{display:flex;flex-direction:column;gap:.35rem;}
+.hobby-top{display:flex;justify-content:space-between;align-items:center;}
+.hobby-name{font-size:.75rem;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:.08em;}
+.hobby-pct{font-size:.7rem;font-family:'Space Mono',monospace;color:var(--hive);font-weight:700;}
+.hobby-bar-bg{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.hobby-bar-fill{
+  height:100%;border-radius:2px;
+  animation:fillBar 2s cubic-bezier(.22,1,.36,1) var(--delay) both;
+  position:relative;overflow:hidden;
+}
+.hobby-bar-fill::after{
+  content:'';position:absolute;top:0;bottom:0;right:0;width:20px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4));
+  animation:shimmer 2s ease-in-out infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-20px);}100%{transform:translateX(40px);}}
+@keyframes fillBar{from{width:0;}to{width:var(--w);}}
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.2rem;}
+.stat-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:10px;padding:.85rem .7rem;
+  position:relative;overflow:hidden;
+  animation:cardFloat var(--cf) ease-in-out infinite alternate;
+}
+@keyframes cardFloat{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-5px);}
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;border-radius:10px;
+  background:linear-gradient(135deg,rgba(245,166,35,.05),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.stat-card:hover::before{opacity:1;}
+.sc-icon{font-size:1.2rem;margin-bottom:.4rem;}
+.sc-val{font-size:1.2rem;font-weight:800;color:var(--white);line-height:1;}
+.sc-lbl{font-size:.55rem;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.25rem;}
+.sc-trend{
+  position:absolute;top:.6rem;right:.6rem;
+  font-size:.55rem;font-family:'Space Mono',monospace;
+  color:var(--green);
+  background:rgba(6,214,160,.1);
+  padding:.15rem .3rem;border-radius:3px;
+}
+.streak-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(245,166,35,.04);
+  border:1px solid rgba(245,166,35,.12);
+  border-radius:10px;padding:.8rem 1rem;
+}
+.streak-info{}
+.streak-fire{font-size:1.3rem;margin-right:.4rem;}
+.streak-days{font-size:1.4rem;font-weight:800;color:var(--hive);}
+.streak-text{font-size:.6rem;font-family:'Space Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.streak-dots{display:flex;gap:.35rem;}
+.sd{width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center;font-size:.55rem;}
+.sd.active{background:rgba(245,166,35,.2);border:1px solid rgba(245,166,35,.4);color:var(--hive);}
+.sd.today{background:var(--hive);color:var(--void);font-weight:700;animation:todayPulse 1.5s ease-in-out infinite;}
+@keyframes todayPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.4);}50%{box-shadow:0 0 0 6px rgba(245,166,35,.0);}}
+.ring-wrap{position:relative;width:70px;height:70px;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-track{fill:none;stroke:rgba(255,255,255,.06);stroke-width:6;}
+.ring-fill{fill:none;stroke-width:6;stroke-linecap:round;stroke-dasharray:var(--da) 200;stroke-dashoffset:0;animation:ringDraw 2s cubic-bezier(.22,1,.36,1) .5s both;}
+@keyframes ringDraw{from{stroke-dasharray:0 200;}to{stroke-dasharray:var(--da) 200;}}
+.ring-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.ring-pct{font-size:.8rem;font-weight:800;color:var(--white);}
+.ring-sub{font-size:.4rem;font-family:'Space Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+section{padding:7rem 5rem;}
+.section-label{
+  font-family:'Space Mono',monospace;
+  font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--hive);margin-bottom:1rem;
+  display:flex;align-items:center;gap:.7rem;
+}
+.section-label::before{content:'';width:30px;height:1px;background:var(--hive);}
+.section-h2{font-size:clamp(2rem,3.5vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:1.2rem;}
+.section-sub{font-family:'Space Mono',monospace;font-size:.88rem;color:var(--muted);max-width:500px;line-height:1.8;}
+#features{background:transparent;}
+.bento-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:auto auto;
+  gap:1.2rem;
+  margin-top:4rem;
+}
+.bento-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:2rem;
+  position:relative;overflow:hidden;
+  cursor:none;
+  transition:border-color .3s;
+  transform-style:preserve-3d;
+  perspective:800px;
+  will-change:transform;
+}
+.bento-card::before{
+  content:'';position:absolute;inset:-1px;border-radius:16px;
+  background:conic-gradient(from var(--angle,0deg),transparent 0deg,var(--hive) 60deg,var(--fuchsia) 120deg,transparent 180deg,transparent 360deg);
+  opacity:0;transition:opacity .3s;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  padding:1.5px;
+  animation:borderRotate 3s linear infinite paused;
+}
+.bento-card:hover::before{opacity:1;animation-play-state:running;}
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false;}
+@keyframes borderRotate{to{--angle:360deg;}}
+.bento-card::after{
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(245,166,35,.07), transparent 60%);
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;
+}
+.bento-card:hover::after{opacity:1;}
+.bento-wide{grid-column:span 2;}
+.bento-tall{grid-row:span 2;}
+.bento-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;margin-bottom:1.4rem;
+  position:relative;
+}
+.bento-icon::before{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  animation:iconGlow 3s ease-in-out infinite alternate;
+}
+@keyframes iconGlow{
+  0%{box-shadow:0 0 10px var(--ic,rgba(245,166,35,.3));}
+  100%{box-shadow:0 0 25px var(--ic,rgba(245,166,35,.6)),inset 0 0 15px var(--ic,rgba(245,166,35,.1));}
+}
+.bento-h3{font-size:1.15rem;font-weight:700;margin-bottom:.6rem;}
+.bento-p{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);line-height:1.7;}
+.mini-chart{
+  display:flex;align-items:flex-end;gap:3px;
+  height:50px;margin-top:1.2rem;
+}
+.bar{
+  flex:1;border-radius:2px 2px 0 0;
+  animation:barRise 1.5s cubic-bezier(.22,1,.36,1) var(--bd2) both;
+}
+@keyframes barRise{from{transform:scaleY(0);transform-origin:bottom;}to{transform:scaleY(1);}}
+.mini-calendar{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:1.2rem;
+}
+.cal-day{
+  aspect-ratio:1;border-radius:3px;
+  font-size:.45rem;font-family:'Space Mono',monospace;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);
+}
+.cal-day.done{background:rgba(245,166,35,.3);color:var(--hive);}
+.cal-day.hot{background:var(--hive);color:var(--void);font-weight:700;animation:todayPulse 1.5s ease-in-out infinite;}
+#how{
+  background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);
+  position:relative;
+}
+.steps{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+  margin-top:4rem;
+}
+.step{text-align:center;position:relative;}
+.step:not(:last-child)::after{
+  content:'';position:absolute;top:32px;left:calc(50% + 40px);right:calc(-50% + 40px);
+  height:1px;background:linear-gradient(90deg,var(--hive),transparent);
+}
+.step-num{
+  width:64px;height:64px;border-radius:50%;
+  background:transparent;
+  border:1.5px solid var(--hive);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:800;color:var(--hive);
+  margin:0 auto 1.4rem;
+  position:relative;
+  animation:stepPulse 3s ease-in-out infinite;
+}
+.step:nth-child(2) .step-num{animation-delay:.5s;}
+.step:nth-child(3) .step-num{animation-delay:1s;}
+.step:nth-child(4) .step-num{animation-delay:1.5s;}
+@keyframes stepPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.2);}
+  50%{box-shadow:0 0 0 12px rgba(245,166,35,.0);}
+}
+.step-num::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:1px dashed rgba(245,166,35,.2);
+  animation:orbitSpin2 8s linear infinite;
+}
+@keyframes orbitSpin2{to{transform:rotate(360deg);}}
+.step h3{font-size:1rem;font-weight:700;margin-bottom:.6rem;}
+.step p{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.7;}
+#testimonials{overflow:hidden;}
+.testimonials-track{
+  display:flex;gap:1.5rem;
+  animation:marquee 30s linear infinite;
+  width:max-content;
+}
+.testimonials-track:hover{animation-play-state:paused;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}
+}
+.t-card{
+  width:320px;flex-shrink:0;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;padding:1.6rem;
+}
+.t-stars{color:var(--hive);font-size:.8rem;margin-bottom:.8rem;letter-spacing:.1em;}
+.t-text{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;font-style:italic;}
+.t-author{display:flex;align-items:center;gap:.8rem;}
+.t-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  border:1.5px solid var(--border);
+}
+.t-name{font-size:.8rem;font-weight:700;}
+.t-role{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);}
+#cta{
+  text-align:center;padding:8rem 5rem;
+  position:relative;overflow:hidden;
+}
+#cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(124,58,237,.15), transparent 70%);
+}
+.cta-hex{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;opacity:.04;
+  animation:ctaHexSpin 40s linear infinite;
+}
+@keyframes ctaHexSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+#cta h2{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:1.4rem;position:relative;}
+#cta h2 em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--hive),var(--fuchsia),var(--cyan),var(--hive));
+  background-size:300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:gradShift 5s ease-in-out infinite;
+}
+#cta p{font-family:'Space Mono',monospace;font-size:.9rem;color:var(--muted);margin-bottom:3rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;position:relative;}
+.cta-buttons{display:flex;gap:1.2rem;justify-content:center;position:relative;margin-bottom:3rem;}
+.cta-note{
+  font-family:'Space Mono',monospace;font-size:.65rem;color:rgba(245,166,35,.35);
+  letter-spacing:.15em;text-transform:uppercase;position:relative;
+}
+footer{
+  border-top:1px solid var(--border);
+  padding:3rem 5rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-logo{font-size:1.1rem;font-weight:800;color:var(--muted);}
+.footer-logo span{color:var(--hive);}
+.footer-links{display:flex;gap:2rem;}
+.footer-links a{font-family:'Space Mono',monospace;font-size:.65rem;color:rgba(240,234,255,.3);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.footer-links a:hover{color:var(--hive);}
+.footer-copy{font-family:'Space Mono',monospace;font-size:.65rem;color:rgba(240,234,255,.25);}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,1,.36,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.particle{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:2;
+  animation:particleDrift var(--pd) ease-in-out infinite alternate;
+  opacity:.4;
+}
+@keyframes particleDrift{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(var(--pdx),var(--pdy));}
+}
+</style>
 </head>
 <body>
-
-    <!-- Ambient Background Glows -->
-    <div class="ambient-glow glow-1"></div>
-    <div class="ambient-glow glow-2"></div>
-
-    <nav>
-        <div class="logo">
-            <div class="logo-icon"></div>
-            HobbyHive
+<div id="cur"></div>
+<div id="cur-r"></div>
+<div id="mesh-bg">
+  <div class="mesh-blob" style="--bd:12s;--bx:80px;--by:-60px;--bs:1.2;width:600px;height:600px;top:-200px;left:-150px;background:radial-gradient(circle,#7c3aed,transparent 70%);"></div>
+  <div class="mesh-blob" style="--bd:18s;--bx:-100px;--by:80px;--bs:0.85;width:700px;height:700px;top:20%;right:-200px;background:radial-gradient(circle,#e040fb,transparent 70%);"></div>
+  <div class="mesh-blob" style="--bd:15s;--bx:60px;--by:-40px;--bs:1.1;width:500px;height:500px;bottom:10%;left:20%;background:radial-gradient(circle,#f5a623,transparent 70%);animation-delay:-6s;"></div>
+  <div class="mesh-blob" style="--bd:20s;--bx:-80px;--by:100px;--bs:0.9;width:400px;height:400px;bottom:-100px;right:10%;background:radial-gradient(circle,#00e5ff,transparent 70%);animation-delay:-10s;"></div>
+</div>
+<div id="dot-grid"></div>
+<script>
+for(let i=0;i<20;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  const sz=Math.random()*4+2;
+  const colors=['#f5a623','#e040fb','#00e5ff','#06d6a0'];
+  p.style.cssText=`width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*4)]};left:${Math.random()*100}vw;top:${Math.random()*100}vh;--pd:${(Math.random()*6+4).toFixed(1)}s;--pdx:${(Math.random()*60-30).toFixed(0)}px;--pdy:${(Math.random()*60-30).toFixed(0)}px;animation-delay:-${(Math.random()*10).toFixed(1)}s;`;
+  document.body.appendChild(p);
+}
+</script>
+<div id="app">
+<nav>
+  <div class="nav-logo">
+    <svg class="hex-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="16,2 29,9.5 29,22.5 16,30 3,22.5 3,9.5" fill="rgba(245,166,35,.1)" stroke="#f5a623" stroke-width="1.5"/>
+      <polygon points="16,8 23,12 23,20 16,24 9,20 9,12" fill="rgba(245,166,35,.2)"/>
+      <circle cx="16" cy="16" r="3" fill="#f5a623"/>
+    </svg>
+    Hobby<span style="color:var(--hive)">Hive</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#testimonials">Stories</a>
+  </div>
+  <a href="#cta" class="nav-cta">Start Free</a>
+</nav>
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      Now tracking 50,000+ hobbyists
+    </div>
+    <h1 class="hero-h1">
+      Architect<br>
+      <span class="line2">your time.</span>
+    </h1>
+    <p class="hero-sub">
+      Your passions deserve structure. HobbyHive transforms scattered interests into a living, breathing map of mastery — so every hour counts.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary"><span>Enter the Hive →</span></a>
+      <a href="#how" class="btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">2.4M+</div>
+        <div class="stat-label">Hours tracked</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Retention rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8.3×</div>
+        <div class="stat-label">Faster progress</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="dashboard">
+      <div class="dash-header">
+        <div class="dash-title">⬡ Weekly Overview</div>
+        <div class="dash-dots">
+          <div class="dash-dot" style="background:#ff5f57;"></div>
+          <div class="dash-dot" style="background:#febc2e;"></div>
+          <div class="dash-dot" style="background:#28c840;"></div>
         </div>
-        <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#community">Community</a>
-            <a href="#download">Download</a>
+      </div>
+      <div class="hobby-list">
+        <div class="hobby-item">
+          <div class="hobby-top">
+            <span class="hobby-name">♪ Guitar</span>
+            <span class="hobby-pct">78%</span>
+          </div>
+          <div class="hobby-bar-bg">
+            <div class="hobby-bar-fill" style="--w:78%;--delay:.3s;background:linear-gradient(90deg,#f5a623,#ff6b35);"></div>
+          </div>
         </div>
-    </nav>
-
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">✨ Version 1.0 Available Now</div>
-            <h1 class="text-gradient">Master your <br><span class="text-gradient-accent">Passions</span></h1>
-            <p>The ultimate mobile companion for tracking, analyzing, and leveling up your hobbies. Join the hive and turn your spare time into a masterpiece.</p>
-            <a href="#" class="btn-primary">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download APK
-            </a>
+        <div class="hobby-item">
+          <div class="hobby-top">
+            <span class="hobby-name">{ } Coding</span>
+            <span class="hobby-pct">92%</span>
+          </div>
+          <div class="hobby-bar-bg">
+            <div class="hobby-bar-fill" style="--w:92%;--delay:.45s;background:linear-gradient(90deg,#7c3aed,#e040fb);"></div>
+          </div>
         </div>
-        <div class="hero-image">
-            <img src="assets/app_mockup.png" alt="HobbyHive App Interface Mockup">
+        <div class="hobby-item">
+          <div class="hobby-top">
+            <span class="hobby-name">🎨 Painting</span>
+            <span class="hobby-pct">54%</span>
+          </div>
+          <div class="hobby-bar-bg">
+            <div class="hobby-bar-fill" style="--w:54%;--delay:.6s;background:linear-gradient(90deg,#06d6a0,#00e5ff);"></div>
+          </div>
         </div>
-    </section>
-
-    <section class="features" id="features">
-        <div class="section-header gs-reveal">
-            <h2>Everything you need.</h2>
-            <p class="text-gradient-accent" style="font-size: 1.25rem; font-weight: 600;">Designed for focus, built for growth.</p>
+        <div class="hobby-item">
+          <div class="hobby-top">
+            <span class="hobby-name">🏃 Running</span>
+            <span class="hobby-pct">65%</span>
+          </div>
+          <div class="hobby-bar-bg">
+            <div class="hobby-bar-fill" style="--w:65%;--delay:.75s;background:linear-gradient(90deg,#ff3b6b,#ffd166);"></div>
+          </div>
         </div>
-
-        <div class="bento-grid">
-            <div class="bento-card bento-large gs-reveal">
-                <div>
-                    <div class="bento-icon">📊</div>
-                    <h3>Activity Heatmap</h3>
-                    <p>Visualize your consistency. Our GitHub-style heatmap tracks your daily session minutes. Maintain your streak and watch the grid glow with your progress over a 24-week timeline.</p>
-                </div>
+      </div>
+      <div class="stat-cards">
+        <div class="stat-card" style="--cf:3.1s;">
+          <div class="sc-icon">⏱</div>
+          <div class="sc-val">14.2h</div>
+          <div class="sc-lbl">This week</div>
+          <div class="sc-trend">+12%</div>
+        </div>
+        <div class="stat-card" style="--cf:3.8s;animation-delay:.3s;">
+          <div class="sc-icon">🎯</div>
+          <div class="sc-val">6/8</div>
+          <div class="sc-lbl">Goals hit</div>
+          <div class="sc-trend">75%</div>
+        </div>
+        <div class="stat-card" style="--cf:3.4s;animation-delay:.6s;">
+          <div class="sc-icon">⚡</div>
+          <div class="sc-val">4</div>
+          <div class="sc-lbl">Hobbies</div>
+          <div class="sc-trend">Active</div>
+        </div>
+      </div>
+      <div class="streak-row">
+        <div class="streak-info">
+          <div>
+            <span class="streak-fire">🔥</span>
+            <span class="streak-days">21</span>
+          </div>
+          <div class="streak-text">Day streak — keep it up!</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 70 70" width="70" height="70">
+              <circle class="ring-track" cx="35" cy="35" r="28"/>
+              <circle class="ring-fill" cx="35" cy="35" r="28" stroke="#f5a623" style="--da:148;"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-pct">74%</div>
+              <div class="ring-sub">Daily</div>
             </div>
-            
-            <div class="bento-card gs-reveal">
-                <div class="bento-icon">🎯</div>
-                <h3>Goal Setting</h3>
-                <p>Set precise target dates and track your progress with beautiful animated ring charts.</p>
-            </div>
-            
-            <div class="bento-card gs-reveal">
-                <div class="bento-icon">🏆</div>
-                <h3>Trophies</h3>
-                <p>Unlock custom achievements as you hit milestones and complete challenges.</p>
-            </div>
-
-            <div class="bento-card gs-reveal">
-                <div class="bento-icon">💬</div>
-                <h3>Community Forums</h3>
-                <p>Join hobby-specific groups, ask questions, and share your progress with the hive.</p>
-            </div>
-
-            <div class="bento-card gs-reveal">
-                <div class="bento-icon">🧠</div>
-                <h3>AI Insights</h3>
-                <p>Get personalized health checks and burnout warnings based on your tracking velocity.</p>
-            </div>
+          </div>
+          <div class="streak-dots">
+            <div class="sd active">M</div>
+            <div class="sd active">T</div>
+            <div class="sd active">W</div>
+            <div class="sd active">T</div>
+            <div class="sd active">F</div>
+            <div class="sd active">S</div>
+            <div class="sd today">S</div>
+          </div>
         </div>
-    </section>
-
-    <footer>
-        <div class="logo" style="justify-content: center; margin-bottom: 16px;">
-            <div class="logo-icon" style="width: 24px; height: 24px;"></div>
-            HobbyHive
-        </div>
-        <p>&copy; 2026 HobbyHive Inc. Master your passions.</p>
-    </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            gsap.registerPlugin(ScrollTrigger);
-
-            // Hero Animation
-            gsap.from(".hero-content > *", {
-                y: 30,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: "power3.out"
-            });
-
-            gsap.from(".hero-image img", {
-                x: 50,
-                opacity: 0,
-                duration: 1.5,
-                ease: "power2.out",
-                delay: 0.5
-            });
-
-            // Scroll Reveal for Bento Box
-            const revealElements = document.querySelectorAll(".gs-reveal");
-            revealElements.forEach((elem) => {
-                gsap.from(elem, {
-                    scrollTrigger: {
-                        trigger: elem,
-                        start: "top 85%", // Animation starts when top of element hits 85% down viewport
-                    },
-                    y: 50,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.out"
-                });
-            });
-        });
-    </script>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-h2 reveal">Everything a<br>serious hobbyist needs</h2>
+  <p class="section-sub reveal">Built for the obsessed. Designed for the organized. Optimized for the extraordinary.</p>
+  <div class="bento-grid reveal">
+    <div class="bento-card bento-wide bento-tall" style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(13,10,30,.9));">
+      <div class="bento-icon" style="--ic:rgba(124,58,237,.5);background:rgba(124,58,237,.15);">📊</div>
+      <h3 class="bento-h3">Smart Analytics</h3>
+      <p class="bento-p">Deep-dive into your time patterns. Visualize peaks, plateaus, and breakthrough moments across every passion.</p>
+      <div class="mini-chart">
+        <div class="bar" style="--bd2:.1s;height:30%;background:rgba(124,58,237,.4);"></div>
+        <div class="bar" style="--bd2:.15s;height:55%;background:rgba(124,58,237,.5);"></div>
+        <div class="bar" style="--bd2:.2s;height:40%;background:rgba(124,58,237,.4);"></div>
+        <div class="bar" style="--bd2:.25s;height:80%;background:rgba(124,58,237,.7);"></div>
+        <div class="bar" style="--bd2:.3s;height:65%;background:rgba(124,58,237,.6);"></div>
+        <div class="bar" style="--bd2:.35s;height:90%;background:#7c3aed;"></div>
+        <div class="bar" style="--bd2:.4s;height:72%;background:rgba(124,58,237,.65);"></div>
+        <div class="bar" style="--bd2:.45s;height:85%;background:rgba(124,58,237,.75);"></div>
+        <div class="bar" style="--bd2:.5s;height:50%;background:rgba(124,58,237,.5);"></div>
+        <div class="bar" style="--bd2:.55s;height:95%;background:#e040fb;"></div>
+      </div>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon" style="--ic:rgba(245,166,35,.5);background:rgba(245,166,35,.12);">🔥</div>
+      <h3 class="bento-h3">Streak Engine</h3>
+      <p class="bento-p">Never break the chain. Gamified consistency that keeps momentum alive.</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon" style="--ic:rgba(6,214,160,.5);background:rgba(6,214,160,.1);">🎯</div>
+      <h3 class="bento-h3">Goal Forge</h3>
+      <p class="bento-p">Set milestones. Get nudged. Celebrate when you hit them.</p>
+    </div>
+    <div class="bento-card bento-tall">
+      <div class="bento-icon" style="--ic:rgba(255,59,107,.5);background:rgba(255,59,107,.1);">📅</div>
+      <h3 class="bento-h3">Activity Calendar</h3>
+      <p class="bento-p">Your entire history in one glance. Color-coded by intensity and mood.</p>
+      <div class="mini-calendar" style="margin-top:1.4rem;">
+        <div class="cal-day">Mo</div><div class="cal-day">Tu</div><div class="cal-day">We</div><div class="cal-day">Th</div><div class="cal-day">Fr</div><div class="cal-day">Sa</div><div class="cal-day">Su</div>
+        <div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day" style="background:rgba(255,255,255,.04);">—</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div>
+        <div class="cal-day done">✓</div><div class="cal-day" style="background:rgba(255,255,255,.04);">—</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div>
+        <div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day done">✓</div><div class="cal-day hot">★</div><div class="cal-day" style="background:rgba(245,166,35,.05);color:var(--hive);border:1px dashed rgba(245,166,35,.3);">·</div>
+      </div>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon" style="--ic:rgba(0,229,255,.5);background:rgba(0,229,255,.1);">🏆</div>
+      <h3 class="bento-h3">Trophies & Achievements</h3>
+      <p class="bento-p">Unlock custom badges as you hit milestones and level up your skills.</p>
+    </div>
+    <div class="bento-card bento-wide">
+      <div class="bento-icon" style="--ic:rgba(255,209,102,.5);background:rgba(255,209,102,.1);">🌐</div>
+      <h3 class="bento-h3">Community Hive</h3>
+      <p class="bento-p">Share progress with fellow hobbyists. Compete on leaderboards. Get inspired by others on the same journey — from beginner to master.</p>
+    </div>
+  </div>
+</section>
+<section id="how">
+  <div class="section-label">Process</div>
+  <h2 class="section-h2 reveal">Four steps from<br>scattered to mastery</h2>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Add Hobbies</h3>
+      <p>Drop in everything you love — guitar, running, chess, anything. The Hive organizes them instantly.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Log Sessions</h3>
+      <p>One tap to start a timer. Add notes, mood, intensity. Build your personal data trail.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>See Patterns</h3>
+      <p>Watch your analytics bloom. Discover when you're most focused and what drives breakthroughs.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Reach Mastery</h3>
+      <p>With consistency mapped and goals forged, watch yourself evolve week by week, month by month.</p>
+    </div>
+  </div>
+</section>
+<section id="testimonials">
+  <div class="section-label">Stories</div>
+  <h2 class="section-h2 reveal" style="margin-bottom:3rem;">Real hobbyists.<br>Real transformations.</h2>
+  <div class="testimonials-track">
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"I went from noodling on guitar 20 mins a week to 2 hours daily. Seeing the streak grow made it addictive."</p><div class="t-author"><div class="t-avatar">🎸</div><div><div class="t-name">Arjun S.</div><div class="t-role">Guitar · 14 months streak</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The analytics showed me I was only practicing chess in the morning. Shifted to evenings — my rating jumped 200 points."</p><div class="t-author"><div class="t-avatar">♟</div><div><div class="t-name">Priya M.</div><div class="t-role">Chess · 1800 Elo</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Three hobbies, zero structure. Now I have dedicated time blocks and actually finish paintings instead of abandoning them."</p><div class="t-author"><div class="t-avatar">🎨</div><div><div class="t-name">Lena K.</div><div class="t-role">Painting · 62 sessions</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Ran my first marathon after HobbyHive helped me see I was only running 8 miles a week. Slowly, consistently, I got to 40."</p><div class="t-author"><div class="t-avatar">🏃</div><div><div class="t-name">Marcus T.</div><div class="t-role">Running · 4:12 marathon</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"I track six hobbies. HobbyHive shows me how they complement each other. Cooking creativity feeds my photography eye."</p><div class="t-author"><div class="t-avatar">📷</div><div><div class="t-name">Sofia R.</div><div class="t-role">Multi-hobby · 6 active</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"I went from noodling on guitar 20 mins a week to 2 hours daily. Seeing the streak grow made it addictive."</p><div class="t-author"><div class="t-avatar">🎸</div><div><div class="t-name">Arjun S.</div><div class="t-role">Guitar · 14 months streak</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The analytics showed me I was only practicing chess in the morning. Shifted to evenings — my rating jumped 200 points."</p><div class="t-author"><div class="t-avatar">♟</div><div><div class="t-name">Priya M.</div><div class="t-role">Chess · 1800 Elo</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Three hobbies, zero structure. Now I have dedicated time blocks and actually finish paintings instead of abandoning them."</p><div class="t-author"><div class="t-avatar">🎨</div><div><div class="t-name">Lena K.</div><div class="t-role">Painting · 62 sessions</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Ran my first marathon after HobbyHive helped me see I was only running 8 miles a week. Slowly, consistently, I got to 40."</p><div class="t-author"><div class="t-avatar">🏃</div><div><div class="t-name">Marcus T.</div><div class="t-role">Running · 4:12 marathon</div></div></div></div>
+    <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"I track six hobbies. HobbyHive shows me how they complement each other. Cooking creativity feeds my photography eye."</p><div class="t-author"><div class="t-avatar">📷</div><div><div class="t-name">Sofia R.</div><div class="t-role">Multi-hobby · 6 active</div></div></div></div>
+  </div>
+</section>
+<section id="cta">
+  <svg class="cta-hex" viewBox="0 0 600 600" fill="none">
+    <polygon points="300,20 560,160 560,440 300,580 40,440 40,160" stroke="#f5a623" stroke-width="1"/>
+    <polygon points="300,80 500,196 500,404 300,520 100,404 100,196" stroke="#f5a623" stroke-width=".6"/>
+    <polygon points="300,140 440,232 440,368 300,460 160,368 160,232" stroke="#f5a623" stroke-width=".4"/>
+  </svg>
+  <h2>Your passions are<br><em>waiting for you.</em></h2>
+  <p>Stop letting another week slip by with nothing to show. Enter the Hive. Start tracking. Start growing.</p>
+  <div class="cta-buttons">
+    <a href="index.html" class="btn-primary"><span>← Back to Splash</span></a>
+    <a href="#" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#e040fb);"><span>Get Started Free →</span></a>
+  </div>
+  <div class="cta-note">No credit card · Free forever tier · Join 50,000+ hobbyists</div>
+</section>
+<footer>
+  <div class="footer-logo">Hobby<span>Hive</span></div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Blog</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 HobbyHive. All rights reserved.</div>
+</footer>
+</div>
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur.style.left=mx+'px';cur.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.bento-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='48px';ring.style.height='48px';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='32px';ring.style.height='32px';});
+});
+document.querySelectorAll('.bento-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const cx=(e.clientX-r.left)/r.width-0.5;
+    const cy=(e.clientY-r.top)/r.height-0.5;
+    card.style.transform=`perspective(800px) rotateY(${cx*14}deg) rotateX(${-cy*10}deg) translateZ(8px)`;
+    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateY(0) rotateX(0) translateZ(0)';
+  });
+});
+const revEls=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.1,rootMargin:'0px 0px -60px 0px'});
+revEls.forEach(el=>obs.observe(el));
+document.querySelectorAll('.bento-card').forEach((card,i)=>{
+  card.style.transitionDelay=`${i*.07}s`;
+  card.classList.add('reveal');
+  obs.observe(card);
+});
+document.querySelectorAll('.step').forEach((step,i)=>{
+  step.style.transitionDelay=`${i*.12}s`;
+  step.classList.add('reveal');
+  obs.observe(step);
+});
+</script>
 </body>
 </html>
