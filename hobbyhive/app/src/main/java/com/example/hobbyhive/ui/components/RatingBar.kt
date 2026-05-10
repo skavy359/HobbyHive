@@ -16,10 +16,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.hobbyhive.ui.theme.AccentAmber
+import com.example.hobbyhive.ui.theme.HoneyYellow
 
 // ═══════════════════════════════════════════════════
-// RatingBar — Custom interactive star rating
+// RatingBar — Honey-colored star rating
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -29,7 +29,7 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     maxStars: Int = 5,
     starSize: Dp = 32.dp,
-    activeColor: Color = AccentAmber,
+    activeColor: Color = HoneyYellow,
     inactiveColor: Color = Color.Gray.copy(alpha = 0.3f),
 ) {
     var rowWidth by remember { mutableIntStateOf(0) }
@@ -57,7 +57,6 @@ fun RatingBar(
                                     val starWidth = rowWidth.toFloat() / maxStars
                                     val draggedRating = (change.position.x / starWidth)
                                         .coerceIn(0f, maxStars.toFloat())
-                                    // Round to nearest 0.5
                                     val rounded = (draggedRating * 2).toInt() / 2f
                                     onRatingChanged?.invoke(rounded.coerceIn(0.5f, maxStars.toFloat()))
                                 }

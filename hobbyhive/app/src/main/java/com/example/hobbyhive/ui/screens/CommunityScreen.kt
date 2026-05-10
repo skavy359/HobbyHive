@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -99,15 +100,15 @@ fun CommunityScreen(
 @Composable
 fun ForumPostCard(post: ForumPost, onUpvote: () -> Unit, onClick: () -> Unit) {
     val df = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
-    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
+    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Column(Modifier.padding(16.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 BadgeChip(post.category, ThemeBlue)
-                Text(df.format(Date(post.createdAt)), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(df.format(Date(post.createdAt)), fontSize = 11.sp, color = Charcoal)
             }
             Spacer(Modifier.height(8.dp))
             Text(post.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text("by ${post.authorName}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("by ${post.authorName}", fontSize = 12.sp, color = Charcoal)
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onUpvote() }) {
@@ -116,9 +117,9 @@ fun ForumPostCard(post: ForumPost, onUpvote: () -> Unit, onClick: () -> Unit) {
                     Text("${post.upvotes}", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.ChatBubbleOutline, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Icon(Icons.Default.ChatBubbleOutline, null, Modifier.size(16.dp), tint = Charcoal)
                     Spacer(Modifier.width(4.dp))
-                    Text("${post.repliesCount}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${post.repliesCount}", fontSize = 13.sp, color = Charcoal)
                 }
             }
         }
@@ -127,7 +128,7 @@ fun ForumPostCard(post: ForumPost, onUpvote: () -> Unit, onClick: () -> Unit) {
 
 @Composable
 fun GroupCard(group: HobbyGroup, onJoinToggle: () -> Unit) {
-    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
+    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.fillMaxWidth()) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Surface(Modifier.size(50.dp), shape = RoundedCornerShape(12.dp), color = ThemeIndigo.copy(alpha = 0.1f)) {
                 Box(contentAlignment = Alignment.Center) { Icon(Icons.Default.Groups, null, tint = ThemeIndigo, modifier = Modifier.size(24.dp)) }
@@ -135,13 +136,13 @@ fun GroupCard(group: HobbyGroup, onJoinToggle: () -> Unit) {
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 Text(group.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(group.description, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(group.description, fontSize = 13.sp, color = Charcoal, maxLines = 2)
                 Spacer(Modifier.height(4.dp))
                 Text("${group.membersCount} members • ${group.category}", fontSize = 12.sp, color = ThemeBlue, fontWeight = FontWeight.SemiBold)
             }
             Button(
                 onClick = onJoinToggle,
-                colors = ButtonDefaults.buttonColors(containerColor = if (group.isJoined) MaterialTheme.colorScheme.surfaceVariant else ThemeIndigo, contentColor = if (group.isJoined) MaterialTheme.colorScheme.onSurface else Color.White)
+                colors = ButtonDefaults.buttonColors(containerColor = if (group.isJoined) PaperWarm else ThemeIndigo, contentColor = if (group.isJoined) InkBlack else Color.White)
             ) {
                 Text(if (group.isJoined) "Joined" else "Join")
             }
@@ -199,7 +200,7 @@ fun PostDetailScreen(postId: Long, onNavigateBack: () -> Unit, viewModel: Commun
                         BadgeChip(p.category, ThemeBlue)
                         Spacer(Modifier.height(8.dp))
                         Text(p.title, fontSize = 22.sp, fontWeight = FontWeight.Black)
-                        Text("by ${p.authorName} • ${df.format(Date(p.createdAt))}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("by ${p.authorName} • ${df.format(Date(p.createdAt))}", fontSize = 13.sp, color = Charcoal)
                         Spacer(Modifier.height(16.dp))
                         Text(p.content, fontSize = 15.sp, lineHeight = 22.sp)
                         Spacer(Modifier.height(16.dp))
@@ -209,11 +210,11 @@ fun PostDetailScreen(postId: Long, onNavigateBack: () -> Unit, viewModel: Commun
                     }
                 }
                 items(comments) { comment ->
-                    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))) {
+                    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = PaperWarm.copy(alpha = 0.5f))) {
                         Column(Modifier.padding(12.dp).fillMaxWidth()) {
                             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                                 Text(comment.authorName, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                                Text(df.format(Date(comment.createdAt)), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(df.format(Date(comment.createdAt)), fontSize = 11.sp, color = Charcoal)
                             }
                             Spacer(Modifier.height(4.dp))
                             Text(comment.content, fontSize = 14.sp)

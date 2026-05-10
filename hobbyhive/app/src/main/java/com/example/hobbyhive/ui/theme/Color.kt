@@ -3,108 +3,144 @@ package com.example.hobbyhive.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // ═══════════════════════════════════════════════════
-// HobbyHive Color Palette — Industry-Grade Professional
+// HobbyHive — Playful Handmade Editorial Palette
+// Bee-themed, bold, chunky, warm & expressive
 // ═══════════════════════════════════════════════════
 
-// Primary Brand Colors
-val Primary = Color(0xFF1A1A2E)          // Deep navy
-val PrimaryVariant = Color(0xFF16213E)   // Darker navy
-val MidNavy = Color(0xFF0F3460)          // Mid navy
+// ── Ink & Paper ──────────────────────────────────
+val InkBlack = Color(0xFF1A1A1A)          // Thick outlines, bold text
+val Charcoal = Color(0xFF333333)          // Body text
+val PaperCream = Color(0xFFFFF8E7)        // Warm paper background
+val PaperWhite = Color(0xFFFFFDF5)        // Card surfaces
+val PaperWarm = Color(0xFFFFF3D6)         // Warmer variant
 
-// Accent Colors
-val AccentPurple = Color(0xFF6C63FF)     // Modern purple — CTAs, highlights
-val AccentPurpleLight = Color(0xFF8B83FF) // Light purple (dark mode)
-val AccentTeal = Color(0xFF00B4D8)       // Teal — progress bars, chips
-val AccentTealLight = Color(0xFF23C4E8)  // Light teal (dark mode)
-val AccentAmber = Color(0xFFF5A623)      // Warm amber — ratings, streaks
-val AccentAmberLight = Color(0xFFF7B84B) // Light amber (dark mode)
+// ── Primary Honey Palette ────────────────────────
+val HoneyYellow = Color(0xFFFFD93D)       // Primary CTA, bee energy
+val HoneyGold = Color(0xFFFFC107)         // Deeper gold accent
+val HoneyAmber = Color(0xFFFF9800)        // Warm amber for streaks
+val HoneyLight = Color(0xFFFFECB3)        // Soft yellow bg
 
-// Feedback Colors
-val SuccessGreen = Color(0xFF27AE60)
-val ErrorRed = Color(0xFFE74C3C)
-val ErrorRedLight = Color(0xFFFF6B6B)
+// ── Lime Green Accents ───────────────────────────
+val LimeGreen = Color(0xFFC6F135)         // Vibrant lime (from reference)
+val LimeMint = Color(0xFFB8E986)          // Softer mint lime
+val LimeChip = Color(0xFFDDFF6B)          // Chip/badge lime
 
-// Surface & Background — Light Mode
-val SurfaceLight = Color(0xFFFFFFFF)
-val BackgroundLight = Color(0xFFF4F4FF)  // Soft lavender-white
-val OnBackgroundLight = Color(0xFF1A1A2E)
-val OnSurfaceLight = Color(0xFF1A1A2E)
-val SubtextLight = Color(0xFF4A4A6A)
-val BorderLight = Color(0xFFD0D0E8)
-val CardLight = Color(0xFFFFFFFF)
-val RowAltLight = Color(0xFFF0F0FA)
+// ── Cyan / Sky ───────────────────────────────────
+val CyanSky = Color(0xFF7FDBDA)           // Cards, backgrounds
+val CyanBright = Color(0xFF40E0D0)        // Brighter cyan accent
+val CyanPale = Color(0xFFE0F7FA)          // Pale cyan bg
 
-// Surface & Background — Dark Mode
-val SurfaceDark = Color(0xFF1E1E2E)
-val BackgroundDark = Color(0xFF13131E)
-val OnBackgroundDark = Color(0xFFE8E8F0)
-val OnSurfaceDark = Color(0xFFE8E8F0)
-val SubtextDark = Color(0xFF8888AA)
-val BorderDark = Color(0xFF2E2E42)
-val CardDark = Color(0xFF252538)
-val RowAltDark = Color(0xFF1A1A2A)
+// ── Pastel Accents ───────────────────────────────
+val PastelPink = Color(0xFFFFB5C2)        // Fun card accent
+val PastelPeach = Color(0xFFFFE5B4)       // Warm sections
+val PastelLavender = Color(0xFFD4BBFF)    // Purple-ish accent
+val PastelMint = Color(0xFFB2F5EA)        // Mint section
 
-// Tinted Backgrounds for info cards
-val AccentBg = Color(0xFFEEF0FF)
-val AmberBg = Color(0xFFFFF8EC)
-val TealBg = Color(0xFFE8F9FD)
-val GreenBg = Color(0xFFEAFAF1)
+// ── Feedback Colors ──────────────────────────────
+val SuccessGreen = Color(0xFF4CAF50)
+val ErrorRed = Color(0xFFEF5350)
+val ErrorRedLight = Color(0xFFFF8A80)
+val WarningOrange = Color(0xFFFF9800)
 
-// Dot Grid Colors
-val DotGridLight = Color(0x1F6A63FF)     // rgba(106, 99, 255, 0.12)
-val DotGridDark = Color(0x0FFFFFFF)      // rgba(255, 255, 255, 0.06)
+// ── Surface & Background — Light Mode ────────────
+val SurfaceLight = PaperWhite
+val BackgroundLight = PaperCream
+val OnBackgroundLight = InkBlack
+val OnSurfaceLight = InkBlack
+val SubtextLight = Color(0xFF666666)
+val BorderLight = InkBlack                 // Thick black borders!
+val CardLight = PaperWhite
+val RowAltLight = Color(0xFFFFF5E6)
 
-// Gradient endpoints
-val GradientStart = AccentPurple
-val GradientEnd = AccentTeal
+// ── Surface & Background — Dark Mode ─────────────
+val SurfaceDark = Color(0xFF2A2A2A)
+val BackgroundDark = Color(0xFF1E1E1E)
+val OnBackgroundDark = Color(0xFFF5F0E3)
+val OnSurfaceDark = Color(0xFFF5F0E3)
+val SubtextDark = Color(0xFFAAAAAA)
+val BorderDark = Color(0xFFF5F0E3)         // Light borders on dark
+val CardDark = Color(0xFF333333)
+val RowAltDark = Color(0xFF252525)
 
-// ═══════════════════════════════════════════════════
-// Feature Page Gradient Colors (from SkillSync)
-// ═══════════════════════════════════════════════════
+// ── Tinted Card Backgrounds ──────────────────────
+val YellowCardBg = Color(0xFFFFF9E3)
+val PinkCardBg = Color(0xFFFFECF0)
+val CyanCardBg = Color(0xFFE6FAFA)
+val GreenCardBg = Color(0xFFF0FFF0)
+val PeachCardBg = Color(0xFFFFF0E0)
+val LimeCardBg = Color(0xFFF5FFD6)
 
-// Sessions gradient (emerald → teal → cyan)
-val SessionGreen = Color(0xFF059669)
-val SessionTeal = Color(0xFF0D9488)
-val SessionCyan = Color(0xFF0891B2)
+// ── Paper Texture Colors ─────────────────────────
+val PaperGrainLight = Color(0x0A000000)   // Subtle grain dots
+val PaperGrainDark = Color(0x08FFFFFF)
 
-// Goals gradient (indigo → violet)
-val GoalIndigo = Color(0xFF4F46E5)
-val GoalViolet = Color(0xFF7C3AED)
+// ── Gradient helpers ─────────────────────────────
+val GradientStart = HoneyYellow
+val GradientEnd = HoneyGold
 
-// Analytics gradient (purple → fuchsia)
-val AnalyticsPurple = Color(0xFF9333EA)
-val AnalyticsFuchsia = Color(0xFFC026D3)
+// ── Feature Page Accent Colors ───────────────────
+// Sessions
+val SessionGreen = Color(0xFF4CAF50)
+val SessionTeal = CyanBright
+val SessionCyan = CyanSky
 
-// Planner gradient (indigo → purple → fuchsia)
-val PlannerIndigo = Color(0xFF4F46E5)
-val PlannerPurple = Color(0xFF9333EA)
-val PlannerFuchsia = Color(0xFFC026D3)
+// Goals
+val GoalIndigo = PastelLavender
+val GoalViolet = Color(0xFFB388FF)
 
-// Leaderboard gradient (amber → orange → rose)
-val LeaderAmber = Color(0xFFF59E0B)
-val LeaderOrange = Color(0xFFF97316)
-val LeaderRose = Color(0xFFF43F5E)
+// Analytics
+val AnalyticsPurple = Color(0xFFCE93D8)
+val AnalyticsFuchsia = PastelPink
 
-// Dashboard gradient (indigo → purple)
-val DashboardIndigo = Color(0xFF6366F1)
-val DashboardPurple = Color(0xFF8B5CF6)
+// Planner
+val PlannerIndigo = PastelLavender
+val PlannerPurple = Color(0xFFE1BEE7)
+val PlannerFuchsia = PastelPink
 
-// Streak card (orange → rose)
-val StreakOrange = Color(0xFFF97316)
-val StreakRose = Color(0xFFF43F5E)
+// Leaderboard
+val LeaderAmber = HoneyYellow
+val LeaderOrange = HoneyAmber
+val LeaderRose = PastelPink
+
+// Dashboard
+val DashboardIndigo = HoneyYellow
+val DashboardPurple = HoneyGold
+
+// Streak
+val StreakOrange = HoneyAmber
+val StreakRose = PastelPink
 
 // Status colors
-val StatusPlanned = Color(0xFF6366F1)
-val StatusCompleted = Color(0xFF22C55E)
-val StatusMissed = Color(0xFFEF4444)
-val StatusCancelled = Color(0xFF6B7280)
+val StatusPlanned = PastelLavender
+val StatusCompleted = SuccessGreen
+val StatusMissed = ErrorRed
+val StatusCancelled = Color(0xFF9E9E9E)
 
 // Achievement themes
-val ThemeOrange = Color(0xFFF97316)
-val ThemeIndigo = Color(0xFF6366F1)
-val ThemeEmerald = Color(0xFF10B981)
-val ThemeFuchsia = Color(0xFFD946EF)
-val ThemeBlue = Color(0xFF3B82F6)
-val ThemeRose = Color(0xFFF43F5E)
-val ThemeCyan = Color(0xFF06B6D4)
-val ThemeAmberAch = Color(0xFFF59E0B)
+val ThemeOrange = HoneyAmber
+val ThemeIndigo = PastelLavender
+val ThemeEmerald = Color(0xFF66BB6A)
+val ThemeFuchsia = PastelPink
+val ThemeBlue = CyanSky
+val ThemeRose = PastelPink
+val ThemeCyan = CyanBright
+val ThemeAmberAch = HoneyYellow
+
+// ── Playful accent — Outlined card shadow ────────
+val PlayfulShadow = Color(0xFF1A1A1A)
+
+// ── Accent Colors (Material3 compatibility) ──────
+val AccentPurple = PastelLavender
+val AccentPurpleLight = Color(0xFFE1BEE7)
+val AccentTeal = CyanSky
+val AccentTealLight = CyanBright
+val AccentAmber = HoneyYellow
+val AccentAmberLight = HoneyLight
+val AccentBg = YellowCardBg
+val AmberBg = Color(0xFFFFF8EC)
+val TealBg = CyanCardBg
+val GreenBg = GreenCardBg
+
+// Dot grid (kept for compat but replaced by paper grain)
+val DotGridLight = PaperGrainLight
+val DotGridDark = PaperGrainDark

@@ -2,16 +2,18 @@ package com.example.hobbyhive.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// SectionHeader — Section title with optional action
+// SectionHeader — Bold editorial section title
+// Oversized, chunky, with optional action
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -28,16 +30,18 @@ fun SectionHeader(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.onSurface
+            color = InkBlack,
+            letterSpacing = (-0.3).sp
         )
         if (actionLabel != null && onAction != null) {
             Text(
                 text = actionLabel,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = HoneyGold,
+                letterSpacing = 0.5.sp,
                 modifier = Modifier.clickable { onAction() }
             )
         }

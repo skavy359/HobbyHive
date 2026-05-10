@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +76,7 @@ fun HobbyDetailScreen(
         ) {
             hobby?.let { h ->
                 item {
-                    val statusColor = when (h.status) { HobbyStatus.ACTIVE -> SuccessGreen; HobbyStatus.COMPLETED -> ThemeIndigo; HobbyStatus.ARCHIVED -> MaterialTheme.colorScheme.onSurfaceVariant }
+                    val statusColor = when (h.status) { HobbyStatus.ACTIVE -> SuccessGreen; HobbyStatus.COMPLETED -> ThemeIndigo; HobbyStatus.ARCHIVED -> Charcoal }
                     GradientPageHeader(
                         title = h.name, subtitle = h.description.ifBlank { "No description provided." },
                         badgeIcon = Icons.Default.Category, badgeText = h.category.displayName,
@@ -99,7 +100,7 @@ fun HobbyDetailScreen(
 
                 item { SectionHeader("Progress Overview") }
                 item {
-                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                         Column(Modifier.padding(20.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Text("Mastery Level", fontWeight = FontWeight.Bold, fontSize = 15.sp)
@@ -114,24 +115,24 @@ fun HobbyDetailScreen(
                 if (h.notes.isNotBlank()) {
                     item { SectionHeader("Notes") }
                     item {
-                        Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
-                            Text(h.notes, modifier = Modifier.padding(20.dp), fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 20.sp)
+                        Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.fillMaxWidth()) {
+                            Text(h.notes, modifier = Modifier.padding(20.dp), fontSize = 14.sp, color = InkBlack, lineHeight = 20.sp)
                         }
                     }
                 }
 
                 item { SectionHeader("Details") }
                 item {
-                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                         Column(Modifier.padding(20.dp)) {
                             val df = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Created On", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Created On", fontSize = 14.sp, color = Charcoal)
                                 Text(df.format(Date(h.createdAt)), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             }
                             Spacer(Modifier.height(12.dp))
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Last Updated", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Last Updated", fontSize = 14.sp, color = Charcoal)
                                 Text(df.format(Date(h.updatedAt)), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             }
                         }

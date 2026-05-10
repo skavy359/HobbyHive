@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +42,8 @@ fun SessionsScreen(viewModel: SessionsViewModel = viewModel()) {
                 badgeIcon = Icons.Default.Timer, badgeText = "Time Tracking",
                 gradientColors = listOf(SessionGreen, SessionTeal, SessionCyan),
                 actionButton = {
-                    Button(onClick = { showLogDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.2f))) {
-                        Icon(Icons.Default.Add, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Log Session", fontWeight = FontWeight.Bold)
+                    Button(onClick = { showLogDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = PaperWhite, contentColor = InkBlack), border = BorderStroke(2.dp, InkBlack)) {
+                        Icon(Icons.Default.Add, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Log Session", fontWeight = FontWeight.ExtraBold)
                     }
                 }
             )
@@ -80,17 +81,17 @@ fun SessionsScreen(viewModel: SessionsViewModel = viewModel()) {
         state.sessions.forEachIndexed { idx, entry ->
             item {
                 val df = SimpleDateFormat("MMM dd, yyyy • h:mm a", Locale.getDefault())
-                TimelineItem(accentColor = SessionGreen, isLast = idx == state.sessions.lastIndex) {
+                TimelineItem(accentColor = HoneyYellow, isLast = idx == state.sessions.lastIndex) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
-                            Text(entry.hobbyName, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
-                            Text(df.format(Date(entry.session.sessionDate)), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(entry.hobbyName, fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, color = InkBlack)
+                            Text(df.format(Date(entry.session.sessionDate)), fontSize = 12.sp, color = Charcoal)
                             if (entry.session.notes.isNotBlank()) {
-                                Text(entry.session.notes, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                                Text(entry.session.notes, fontSize = 12.sp, color = Charcoal, maxLines = 2)
                             }
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            BadgeChip(viewModel.formatDuration(entry.session.durationMinutes), SessionGreen)
+                            BadgeChip(viewModel.formatDuration(entry.session.durationMinutes), LimeGreen)
                             Spacer(Modifier.height(4.dp))
                             IconButton(onClick = { viewModel.deleteSession(entry.session) }, modifier = Modifier.size(28.dp)) {
                                 Icon(Icons.Default.Delete, null, modifier = Modifier.size(16.dp), tint = ErrorRed.copy(alpha = 0.6f))

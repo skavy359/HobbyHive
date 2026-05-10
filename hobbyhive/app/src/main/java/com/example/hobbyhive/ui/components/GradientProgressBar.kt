@@ -3,9 +3,9 @@ package com.example.hobbyhive.ui.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -13,21 +13,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// GradientProgressBar — Animated gradient-fill bar
+// GradientProgressBar — Chunky outlined progress bar
+// Thick border, flat bold fill
 // ═══════════════════════════════════════════════════
 
 @Composable
 fun GradientProgressBar(
-    progress: Float,          // 0f to 1f
+    progress: Float,
     modifier: Modifier = Modifier,
     height: Dp = 8.dp,
-    colors: List<Color> = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.secondary
-    ),
-    trackColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    colors: List<Color> = listOf(HoneyYellow, HoneyGold),
+    trackColor: Color = PaperWarm
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
@@ -41,6 +40,7 @@ fun GradientProgressBar(
             .height(height)
             .clip(RoundedCornerShape(height / 2))
             .background(trackColor)
+            .border(1.5.dp, InkBlack.copy(alpha = 0.3f), RoundedCornerShape(height / 2))
     ) {
         Box(
             modifier = Modifier

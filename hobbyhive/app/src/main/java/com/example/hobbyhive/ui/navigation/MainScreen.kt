@@ -1,6 +1,9 @@
 package com.example.hobbyhive.ui.navigation
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -8,6 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hobbyhive.data.HobbyRepository
 import com.example.hobbyhive.ui.screens.*
+import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,12 +66,30 @@ fun MainScreen(
         }
     ) {
         Scaffold(
+            containerColor = PaperCream,
             bottomBar = {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                // Playful editorial bottom bar with thick border
+                NavigationBar(
+                    containerColor = PaperWhite,
+                    tonalElevation = 0.dp,
+                    modifier = Modifier
+                        .border(
+                            width = 2.5.dp,
+                            color = InkBlack,
+                            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                        )
+                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                ) {
                     bottomNavItems.forEach { item ->
                         NavigationBarItem(
                             icon = { Icon(item.icon, contentDescription = item.title) },
-                            label = { Text(item.title) },
+                            label = {
+                                Text(
+                                    item.title,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 10.sp
+                                )
+                            },
                             selected = currentRoute == item.route,
                             onClick = {
                                 bottomNavController.navigate(item.route) {
@@ -72,11 +99,11 @@ fun MainScreen(
                                 }
                             },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                                selectedIconColor = InkBlack,
+                                unselectedIconColor = InkBlack.copy(alpha = 0.4f),
+                                selectedTextColor = InkBlack,
+                                unselectedTextColor = InkBlack.copy(alpha = 0.4f),
+                                indicatorColor = HoneyYellow.copy(alpha = 0.4f)
                             )
                         )
                     }

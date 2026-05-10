@@ -2,6 +2,7 @@ package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -47,7 +48,7 @@ fun StudyPlannerScreen(viewModel: StudyPlannerViewModel = viewModel()) {
                 badgeIcon = Icons.Default.CalendarMonth, badgeText = "Calendar View",
                 gradientColors = listOf(PlannerIndigo, PlannerPurple, PlannerFuchsia),
                 actionButton = {
-                    Button(onClick = { showCreateDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))) {
+                    Button(onClick = { showCreateDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = PaperWhite, contentColor = InkBlack), border = BorderStroke(2.dp, InkBlack)) {
                         Icon(Icons.Default.Add, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("New Event", fontWeight = FontWeight.Bold)
                     }
                 }
@@ -72,7 +73,7 @@ fun StudyPlannerScreen(viewModel: StudyPlannerViewModel = viewModel()) {
             val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1
             val datesWithEvents = viewModel.getDatesWithEvents()
 
-            Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+            Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                 Column(Modifier.padding(20.dp)) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = {
@@ -91,7 +92,7 @@ fun StudyPlannerScreen(viewModel: StudyPlannerViewModel = viewModel()) {
                     Spacer(Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth()) {
                         listOf("S","M","T","W","T","F","S").forEach { d ->
-                            Text(d, Modifier.weight(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(d, Modifier.weight(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Charcoal)
                         }
                     }
                     Spacer(Modifier.height(8.dp))
@@ -115,7 +116,7 @@ fun StudyPlannerScreen(viewModel: StudyPlannerViewModel = viewModel()) {
                                         val isSelected = dayCal.timeInMillis == state.selectedDate
                                         val hasEvent = datesWithEvents.contains(dayCal.timeInMillis)
                                         val bg = when { isSelected -> PlannerIndigo; isToday -> PlannerIndigo.copy(alpha = 0.15f); else -> Color.Transparent }
-                                        val txtColor = when { isSelected -> Color.White; isToday -> PlannerIndigo; else -> MaterialTheme.colorScheme.onSurface }
+                                        val txtColor = when { isSelected -> Color.White; isToday -> PlannerIndigo; else -> InkBlack }
                                         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(bg).clickable { viewModel.selectDate(dayCal.timeInMillis) }.padding(4.dp)) {
                                             Text("$day", color = txtColor, fontSize = 13.sp, fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Normal)
                                             if (hasEvent) Box(Modifier.size(4.dp).clip(CircleShape).background(if (isSelected) Color.White else PlannerPurple))
@@ -144,15 +145,15 @@ fun StudyPlannerScreen(viewModel: StudyPlannerViewModel = viewModel()) {
             item {
                 val timeF = SimpleDateFormat("h:mm a", Locale.getDefault())
                 val statusColor = when (event.status) { EventStatus.PLANNED -> StatusPlanned; EventStatus.COMPLETED -> StatusCompleted; EventStatus.MISSED -> StatusMissed; EventStatus.CANCELLED -> StatusCancelled }
-                Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
+                Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(16.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text(event.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f))
                             BadgeChip(event.status.displayName, statusColor)
                         }
                         Spacer(Modifier.height(4.dp))
-                        Text("${timeF.format(Date(event.startTime))} — ${timeF.format(Date(event.endTime))}", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        if (event.description.isNotBlank()) { Spacer(Modifier.height(4.dp)); Text(event.description, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                        Text("${timeF.format(Date(event.startTime))} — ${timeF.format(Date(event.endTime))}", fontSize = 12.sp, color = Charcoal)
+                        if (event.description.isNotBlank()) { Spacer(Modifier.height(4.dp)); Text(event.description, fontSize = 12.sp, color = Charcoal) }
                         if (event.status == EventStatus.PLANNED) {
                             Spacer(Modifier.height(12.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

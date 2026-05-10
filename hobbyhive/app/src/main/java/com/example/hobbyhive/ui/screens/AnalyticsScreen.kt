@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +40,7 @@ fun AnalyticsScreen(
                 badgeIcon = Icons.Default.Analytics, badgeText = "Learning Health",
                 gradientColors = listOf(AnalyticsPurple, AnalyticsFuchsia),
                 actionButton = {
-                    Button(onClick = onNavigateToLeaderboard, colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))) {
+                    Button(onClick = onNavigateToLeaderboard, colors = ButtonDefaults.buttonColors(containerColor = PaperWhite, contentColor = InkBlack), border = BorderStroke(2.dp, InkBlack)) {
                         Icon(Icons.Default.EmojiEvents, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Leaderboard", fontWeight = FontWeight.Bold)
                     }
                 }
@@ -50,9 +51,9 @@ fun AnalyticsScreen(
         item {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Engagement Ring
-                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.weight(1f)) {
+                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.weight(1f)) {
                     Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Engagement", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Engagement", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Charcoal)
                         Spacer(Modifier.height(12.dp))
                         RingChart(progress = state.engagementScore, size = 100.dp, strokeWidth = 10.dp, color = AnalyticsPurple, label = "score")
                     }
@@ -85,14 +86,14 @@ fun AnalyticsScreen(
         // Burnout indicator
         item {
             val burnColor = when (state.burnoutRisk) { "High" -> ErrorRed; "Moderate" -> AccentAmber; else -> SuccessGreen }
-            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                 Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Surface(Modifier.size(48.dp), shape = RoundedCornerShape(14.dp), color = burnColor.copy(alpha = 0.1f)) {
                         Box(contentAlignment = Alignment.Center) { Icon(Icons.Default.MonitorHeart, null, tint = burnColor) }
                     }
                     Column(Modifier.weight(1f)) {
                         Text("Burnout Risk", fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                        Text(when (state.burnoutRisk) { "High" -> "Consider taking a rest day"; "Moderate" -> "Good pace, watch for overwork"; else -> "Healthy balance!" }, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(when (state.burnoutRisk) { "High" -> "Consider taking a rest day"; "Moderate" -> "Good pace, watch for overwork"; else -> "Healthy balance!" }, fontSize = 12.sp, color = Charcoal)
                     }
                     BadgeChip(state.burnoutRisk, burnColor)
                 }
@@ -102,7 +103,7 @@ fun AnalyticsScreen(
         // Weekly chart
         if (state.weeklyHours.isNotEmpty()) {
             item {
-                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Column(Modifier.padding(20.dp)) {
                         SectionHeader("Weekly Activity")
                         Spacer(Modifier.height(16.dp))
@@ -119,13 +120,13 @@ fun AnalyticsScreen(
         // Top hobbies
         if (state.topHobbies.isNotEmpty()) {
             item {
-                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Column(Modifier.padding(20.dp)) {
                         SectionHeader("Top Hobbies by Time")
                         Spacer(Modifier.height(12.dp))
                         state.topHobbies.forEachIndexed { i, entry ->
                             Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text("${i + 1}", fontWeight = FontWeight.Black, fontSize = 18.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(30.dp))
+                                Text("${i + 1}", fontWeight = FontWeight.Black, fontSize = 18.sp, color = Charcoal, modifier = Modifier.width(30.dp))
                                 Text(entry.emoji, fontSize = 20.sp)
                                 Spacer(Modifier.width(8.dp))
                                 Text(entry.hobbyName, fontWeight = FontWeight.Bold, fontSize = 14.sp, modifier = Modifier.weight(1f))
@@ -141,14 +142,14 @@ fun AnalyticsScreen(
         // Insights
         if (state.insights.isNotEmpty()) {
             item {
-                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Column(Modifier.padding(20.dp)) {
                         SectionHeader("💡 Insights")
                         Spacer(Modifier.height(12.dp))
                         state.insights.forEach { insight ->
                             Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text("•", fontWeight = FontWeight.Bold, color = AnalyticsPurple)
-                                Text(insight, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+                                Text(insight, fontSize = 13.sp, color = Charcoal, lineHeight = 18.sp)
                             }
                         }
                     }

@@ -1,34 +1,31 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.shape.RoundedCornerShape
-import com.example.hobbyhive.R
-import com.example.hobbyhive.data.UserPreferencesRepository
-import com.example.hobbyhive.ui.components.HobbyText
-import com.example.hobbyhive.ui.theme.AccentAmber
-import com.example.hobbyhive.ui.theme.DotGridBackground
+import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
+import kotlin.math.cos
+import kotlin.math.sin
 
-// ═══════════════════════════════════════════════════
-// SplashScreen — App entry with animated branding
-// ═══════════════════════════════════════════════════
+import com.example.hobbyhive.data.UserPreferencesRepository
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun SplashScreen(
@@ -37,104 +34,146 @@ fun SplashScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToOnboarding: () -> Unit
 ) {
-    // Animation states
-    val logoScale = remember { Animatable(0.5f) }
-    val contentAlpha = remember { Animatable(0f) }
+    // Timing: 1.5 seconds total
+    var startAnimation by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        // Animate in
-        logoScale.animateTo(
-            targetValue = 1f,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow
-            )
-        )
-        contentAlpha.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(800)
-        )
-
-        // Wait for splash display
-        delay(2500L)
-
-        // Check navigation destination
+        startAnimation = true
+        delay(1500)
+        
         val onboardingCompleted = userPreferencesRepository.isOnboardingCompleted.first()
+        val isLoggedIn = userPreferencesRepository.isLoggedIn.first()
+        
         if (!onboardingCompleted) {
             onNavigateToOnboarding()
-            return@LaunchedEffect
-        }
-
-        val isLoggedIn = userPreferencesRepository.isLoggedIn.first()
-        if (isLoggedIn) {
+        } else if (isLoggedIn) {
             onNavigateToHome()
         } else {
             onNavigateToLogin()
         }
     }
 
+    // Animations
+    val beeScale by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f),
+        label = "bee_scale"
+    )
+
+    val beeAlpha by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(400),
+        label = "bee_alpha"
+    )
+
+    val textAlpha by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(600, delayMillis = 300),
+        label = "text_alpha"
+    )
+
+    val taglineAlpha by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(500, delayMillis = 600),
+        label = "tagline_alpha"
+    )
+
+    // Floating honeycomb animation
+    val infiniteTransition = rememberInfiniteTransition(label = "honeycomb")
+    val floatOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 10f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "float"
+    )
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(HoneyYellow),
         contentAlignment = Alignment.Center
     ) {
-        // Dot grid background
-        DotGridBackground()
+        // Background honeycomb pattern
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val hexR = 40.dp.toPx()
+            val hexW = hexR * 2
+            val hexH = hexR * kotlin.math.sqrt(3f)
+            val cols = (size.width / (hexW * 0.75f)).toInt() + 2
+            val rows = (size.height / hexH).toInt() + 2
 
-        // Main content
+            for (col in -1..cols) {
+                for (row in -1..rows) {
+                    val offsetX = if (row % 2 == 1) hexW * 0.375f else 0f
+                    val cx = col * hexW * 0.75f + offsetX
+                    val cy = row * hexH * 0.5f
+
+                    drawHexOutline(
+                        Offset(cx, cy),
+                        hexR * 0.9f,
+                        InkBlack.copy(alpha = 0.06f),
+                        2.dp.toPx()
+                    )
+                }
+            }
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp)
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Logo
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "HobbyHive Logo",
+            // Bee mascot
+            Box(
                 modifier = Modifier
-                    .scale(logoScale.value)
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(24.dp))
-            )
+                    .scale(beeScale)
+                    .alpha(beeAlpha)
+                    .offset(y = floatOffset.dp)
+            ) {
+                BeeMascot(size = 120.dp)
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(24.dp))
 
-            // App name with gradient
-            HobbyText(
+            // App name
+            Text(
                 text = "HobbyHive",
-                useGradient = true,
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp,
-                modifier = Modifier.alpha(contentAlpha.value)
+                modifier = Modifier.alpha(textAlpha),
+                fontSize = 42.sp,
+                fontWeight = FontWeight.Black,
+                color = InkBlack,
+                letterSpacing = (-1).sp
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
             // Tagline
             Text(
-                text = "Find Your Passion. Track Your Progress.",
-                style = MaterialTheme.typography.bodyLarge,
-                fontStyle = FontStyle.Italic,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.alpha(contentAlpha.value)
+                text = "Find Your Passion ✿ Track Your Progress",
+                modifier = Modifier.alpha(taglineAlpha),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = InkBlack.copy(alpha = 0.6f),
+                letterSpacing = 0.5.sp
             )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Loading indicator
-            CircularProgressIndicator(
-                color = AccentAmber,
-                strokeWidth = 3.dp,
-                modifier = Modifier
-                    .size(40.dp)
-                    .alpha(contentAlpha.value)
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
         }
     }
+}
+
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawHexOutline(
+    center: Offset,
+    radius: Float,
+    color: Color,
+    strokeWidth: Float
+) {
+    val path = Path()
+    for (i in 0 until 6) {
+        val angle = Math.toRadians((i * 60 - 30).toDouble())
+        val px = center.x + radius * cos(angle).toFloat()
+        val py = center.y + radius * sin(angle).toFloat()
+        if (i == 0) path.moveTo(px, py) else path.lineTo(px, py)
+    }
+    path.close()
+    drawPath(path, color, style = Stroke(width = strokeWidth))
 }

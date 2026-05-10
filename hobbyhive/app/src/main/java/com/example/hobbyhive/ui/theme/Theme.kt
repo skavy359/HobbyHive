@@ -1,7 +1,6 @@
 package com.example.hobbyhive.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -14,29 +13,30 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 // ═══════════════════════════════════════════════════
-// HobbyHive Theme — Light + Dark Mode
+// HobbyHive Theme — Playful Editorial Style
+// Warm cream paper, honey yellow primary, chunky ink
 // ═══════════════════════════════════════════════════
 
 private val LightColorScheme = lightColorScheme(
-    primary = AccentPurple,
-    onPrimary = SurfaceLight,
-    primaryContainer = AccentBg,
-    onPrimaryContainer = Primary,
+    primary = HoneyYellow,
+    onPrimary = InkBlack,
+    primaryContainer = HoneyLight,
+    onPrimaryContainer = InkBlack,
 
-    secondary = AccentTeal,
-    onSecondary = SurfaceLight,
-    secondaryContainer = TealBg,
-    onSecondaryContainer = Primary,
+    secondary = LimeGreen,
+    onSecondary = InkBlack,
+    secondaryContainer = LimeCardBg,
+    onSecondaryContainer = InkBlack,
 
-    tertiary = AccentAmber,
-    onTertiary = SurfaceLight,
-    tertiaryContainer = AmberBg,
-    onTertiaryContainer = Primary,
+    tertiary = CyanSky,
+    onTertiary = InkBlack,
+    tertiaryContainer = CyanCardBg,
+    onTertiaryContainer = InkBlack,
 
     error = ErrorRed,
-    onError = SurfaceLight,
-    errorContainer = Color(0xFFFCE4EC),
-    onErrorContainer = Color(0xFF93000A),
+    onError = Color.White,
+    errorContainer = Color(0xFFFFEBEE),
+    onErrorContainer = Color(0xFFB71C1C),
 
     background = BackgroundLight,
     onBackground = OnBackgroundLight,
@@ -46,31 +46,31 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = SubtextLight,
 
     outline = BorderLight,
-    outlineVariant = Color(0xFFE0E0F0),
+    outlineVariant = Color(0xFFE0D8C8),
 
-    inverseSurface = Primary,
-    inverseOnSurface = SurfaceLight,
-    inversePrimary = AccentPurpleLight,
+    inverseSurface = InkBlack,
+    inverseOnSurface = PaperCream,
+    inversePrimary = HoneyLight,
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = AccentPurpleLight,
-    onPrimary = Primary,
-    primaryContainer = MidNavy,
-    onPrimaryContainer = AccentPurpleLight,
+    primary = HoneyYellow,
+    onPrimary = InkBlack,
+    primaryContainer = Color(0xFF5C4700),
+    onPrimaryContainer = HoneyLight,
 
-    secondary = AccentTealLight,
-    onSecondary = Primary,
-    secondaryContainer = Color(0xFF003D4D),
-    onSecondaryContainer = AccentTealLight,
+    secondary = LimeGreen,
+    onSecondary = InkBlack,
+    secondaryContainer = Color(0xFF3D4D00),
+    onSecondaryContainer = LimeChip,
 
-    tertiary = AccentAmberLight,
-    onTertiary = Primary,
-    tertiaryContainer = Color(0xFF4D3800),
-    onTertiaryContainer = AccentAmberLight,
+    tertiary = CyanBright,
+    onTertiary = InkBlack,
+    tertiaryContainer = Color(0xFF004D4D),
+    onTertiaryContainer = CyanPale,
 
     error = ErrorRedLight,
-    onError = Primary,
+    onError = InkBlack,
     errorContainer = Color(0xFF93000A),
     onErrorContainer = ErrorRedLight,
 
@@ -82,11 +82,11 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = SubtextDark,
 
     outline = BorderDark,
-    outlineVariant = Color(0xFF3A3A50),
+    outlineVariant = Color(0xFF444444),
 
     inverseSurface = OnBackgroundDark,
     inverseOnSurface = BackgroundDark,
-    inversePrimary = AccentPurple,
+    inversePrimary = HoneyGold,
 )
 
 @Composable
@@ -96,7 +96,7 @@ fun HobbyhiveTheme(
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    // Set status bar color
+    // Set status bar color to match warm paper
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

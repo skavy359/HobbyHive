@@ -18,19 +18,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// RingChart — Animated donut/ring progress chart
+// RingChart — Chunky outlined ring progress
+// Thick stroke, ink outline feel
 // ═══════════════════════════════════════════════════
 
 @Composable
 fun RingChart(
-    progress: Float,         // 0f to 100f
+    progress: Float,
     modifier: Modifier = Modifier,
     size: Dp = 120.dp,
-    strokeWidth: Dp = 12.dp,
-    color: Color = MaterialTheme.colorScheme.primary,
-    trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    strokeWidth: Dp = 14.dp,
+    color: Color = HoneyYellow,
+    trackColor: Color = PaperWarm,
     showLabel: Boolean = true,
     label: String? = null
 ) {
@@ -60,6 +62,17 @@ fun RingChart(
                 style = Stroke(width = stroke, cap = StrokeCap.Round)
             )
 
+            // Outline on track
+            drawArc(
+                color = InkBlack.copy(alpha = 0.15f),
+                startAngle = -90f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(width = stroke + 2.dp.toPx(), cap = StrokeCap.Round)
+            )
+
             // Progress
             drawArc(
                 color = color,
@@ -78,14 +91,14 @@ fun RingChart(
                     text = "${animatedProgress.toInt()}%",
                     fontSize = (size.value / 5).sp,
                     fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = InkBlack
                 )
                 if (label != null) {
                     Text(
                         text = label,
                         fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        fontWeight = FontWeight.Bold,
+                        color = Charcoal
                     )
                 }
             }

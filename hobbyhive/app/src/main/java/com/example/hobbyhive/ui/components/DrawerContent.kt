@@ -1,9 +1,10 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
@@ -11,15 +12,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.hobbyhive.ui.theme.GradientEnd
-import com.example.hobbyhive.ui.theme.GradientStart
+import androidx.compose.ui.unit.sp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// DrawerContent — ModalNavigationDrawer content
+// DrawerContent — Playful editorial nav drawer
+// Honey header, sticker-style items, bee branding
 // ═══════════════════════════════════════════════════
 
 data class DrawerItem(
@@ -49,8 +51,11 @@ fun DrawerContent(
         DrawerItem(Icons.Default.Settings, "Settings", "settings")
     )
 
-    ModalDrawerSheet(modifier = modifier) {
-        // Header
+    ModalDrawerSheet(
+        modifier = modifier,
+        drawerContainerColor = PaperCream
+    ) {
+        // Honey-themed header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,37 +63,40 @@ fun DrawerContent(
                 .padding(bottom = 8.dp),
             contentAlignment = Alignment.BottomStart
         ) {
-            // Gradient overlay
+            // Warm honey background
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(GradientStart, GradientEnd)
-                        )
-                    )
+                    .background(HoneyYellow)
             )
 
             Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
-                androidx.compose.foundation.Image(
-                    painter = androidx.compose.ui.res.painterResource(id = com.example.hobbyhive.R.drawable.logo),
-                    contentDescription = "HobbyHive Logo",
-                    modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
-                )
+                // Logo placeholder — bee emoji as sticker
+                Surface(
+                    modifier = Modifier.size(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    color = PaperWhite,
+                    border = BorderStroke(2.dp, InkBlack)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text("🐝", fontSize = 24.sp)
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "HobbyHive",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.inverseOnSurface
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    color = InkBlack
                 )
                 Text(
                     text = "Find Your Passion. Track Your Progress.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = 0.7f)
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = InkBlack.copy(alpha = 0.7f)
                 )
             }
         }
@@ -101,24 +109,34 @@ fun DrawerContent(
                 icon = {
                     Icon(
                         imageVector = item.icon,
-                        contentDescription = item.label
+                        contentDescription = item.label,
+                        tint = InkBlack
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
-                        style = MaterialTheme.typography.labelLarge
+                        fontWeight = FontWeight.Bold,
+                        color = InkBlack
                     )
                 },
                 selected = false,
                 onClick = { onItemClick(item.route) },
-                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                colors = NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = Color.Transparent,
+                    selectedContainerColor = HoneyLight
+                )
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            color = InkBlack.copy(alpha = 0.15f),
+            thickness = 2.dp
+        )
 
         // Logout
         NavigationDrawerItem(
@@ -126,14 +144,14 @@ fun DrawerContent(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = "Logout",
-                    tint = MaterialTheme.colorScheme.error
+                    tint = ErrorRed
                 )
             },
             label = {
                 Text(
                     text = "Logout",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.labelLarge
+                    color = ErrorRed,
+                    fontWeight = FontWeight.ExtraBold
                 )
             },
             selected = false,

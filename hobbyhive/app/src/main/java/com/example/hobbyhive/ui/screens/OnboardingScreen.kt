@@ -1,8 +1,11 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,8 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hobbyhive.data.UserPreferencesRepository
 import com.example.hobbyhive.ui.components.HobbyButton
-import com.example.hobbyhive.ui.theme.AccentPurple
-import com.example.hobbyhive.ui.theme.DotGridBackground
+import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(val emoji: String, val title: String, val description: String)
@@ -25,7 +27,7 @@ fun OnboardingScreen(
     onFinish: () -> Unit
 ) {
     val pages = listOf(
-        OnboardingPage("🎯", "Welcome to HobbyHive", "Discover, track, and grow your hobbies — all in one beautiful app."),
+        OnboardingPage("🐝", "Welcome to HobbyHive", "Discover, track, and grow your hobbies — all in one beautiful app."),
         OnboardingPage("📊", "Track Your Progress", "Set goals, rate your skills, and watch your progress grow with visual indicators."),
         OnboardingPage("🔔", "Stay on Track", "Set reminders so you never miss a practice session. Build streaks and stay motivated!"),
         OnboardingPage("🎨", "Express Yourself", "Add photos, notes, and categories. Your hobby journey, beautifully organized.")
@@ -42,27 +44,52 @@ fun OnboardingScreen(
 
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
                 Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    Text(pages[page].emoji, fontSize = 80.sp)
+                    if (page == 0) {
+                        BeeMascot(size = 120.dp)
+                    } else {
+                        Text(pages[page].emoji, fontSize = 80.sp)
+                    }
                     Spacer(Modifier.height(32.dp))
-                    Text(pages[page].title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        pages[page].title,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Black,
+                        textAlign = TextAlign.Center,
+                        color = InkBlack,
+                        letterSpacing = (-0.5).sp
+                    )
                     Spacer(Modifier.height(16.dp))
-                    Text(pages[page].description, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp))
+                    Text(
+                        pages[page].description,
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        color = Charcoal,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        lineHeight = 22.sp
+                    )
                 }
             }
 
-            // Page indicators
+            // Page indicators — sticker dots
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 repeat(pages.size) { index ->
-                    val color = if (pagerState.currentPage == index) AccentPurple else MaterialTheme.colorScheme.outline
-                    val width = if (pagerState.currentPage == index) 24.dp else 8.dp
-                    Surface(modifier = Modifier.padding(horizontal = 4.dp).size(width, 8.dp), shape = MaterialTheme.shapes.extraSmall, color = color) {}
+                    val isActive = pagerState.currentPage == index
+                    Surface(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(if (isActive) 24.dp else 10.dp, 10.dp),
+                        shape = RoundedCornerShape(50),
+                        color = if (isActive) HoneyYellow else PaperWarm,
+                        border = BorderStroke(1.5.dp, InkBlack)
+                    ) {}
                 }
             }
 
             Spacer(Modifier.height(32.dp))
 
             if (pagerState.currentPage == pages.size - 1) {
-                HobbyButton(text = "Get Started", onClick = {
+                HobbyButton(text = "Get Started 🐝", onClick = {
                     scope.launch {
                         userPreferencesRepository.setOnboardingCompleted()
                         onFinish()
@@ -75,8 +102,12 @@ fun OnboardingScreen(
                             userPreferencesRepository.setOnboardingCompleted()
                             onFinish()
                         }
-                    }) { Text("Skip") }
-                    HobbyButton(text = "Next", onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } }, modifier = Modifier.width(120.dp))
+                    }) { Text("Skip", color = Charcoal, fontWeight = FontWeight.Bold) }
+                    HobbyButton(
+                        text = "Next →",
+                        onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                        modifier = Modifier.width(120.dp)
+                    )
                 }
             }
 

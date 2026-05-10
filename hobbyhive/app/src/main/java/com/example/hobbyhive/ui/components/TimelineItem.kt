@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -13,49 +14,59 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// TimelineItem — Vertical timeline node for sessions
+// TimelineItem — Sticker-style timeline node
+// Thick borders, warm paper cards
 // ═══════════════════════════════════════════════════
 
 @Composable
 fun TimelineItem(
     modifier: Modifier = Modifier,
-    accentColor: Color = MaterialTheme.colorScheme.primary,
+    accentColor: Color = HoneyYellow,
     isLast: Boolean = false,
     content: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // Timeline track
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.width(20.dp)
         ) {
-            // Circle dot
+            // Hexagonal dot
             Box(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(14.dp)
                     .clip(CircleShape)
-                    .background(Color.White)
-                    .padding(2.dp)
+                    .background(accentColor)
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(2.dp)
                         .clip(CircleShape)
-                        .background(accentColor)
-                )
+                        .background(PaperCream)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(2.dp)
+                            .clip(CircleShape)
+                            .background(accentColor)
+                    )
+                }
             }
-            // Vertical line
+            // Vertical line (dashed feel via dotted)
             if (!isLast) {
                 Box(
                     modifier = Modifier
-                        .width(2.dp)
+                        .width(2.5.dp)
                         .weight(1f)
-                        .background(accentColor.copy(alpha = 0.2f))
+                        .background(InkBlack.copy(alpha = 0.2f))
                 )
             }
         }
@@ -64,14 +75,15 @@ fun TimelineItem(
         Card(
             modifier = Modifier
                 .weight(1f)
-                .padding(bottom = if (isLast) 0.dp else 16.dp),
+                .padding(bottom = if (isLast) 0.dp else 14.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = PaperWhite
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            border = BorderStroke(2.dp, InkBlack),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
-            Box(modifier = Modifier.padding(16.dp)) {
+            Box(modifier = Modifier.padding(14.dp)) {
                 content()
             }
         }

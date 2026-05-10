@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -126,7 +127,7 @@ fun ProfileScreen(
             item {
                 Card(
                     shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    colors = CardDefaults.cardColors(containerColor = PaperWhite),
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 ) {
                     Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -153,18 +154,18 @@ fun ProfileScreen(
                         }
                         Spacer(Modifier.height(16.dp))
                         Text(userName.ifBlank { "User" }, fontSize = 24.sp, fontWeight = FontWeight.Black)
-                        Text(userEmail.ifBlank { "—" }, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(userEmail.ifBlank { "—" }, fontSize = 14.sp, color = Charcoal)
                         
                         Spacer(Modifier.height(16.dp))
-                        Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), modifier = Modifier.clickable { editName = userName; editAbout = userAbout; showEditDialog = true }) {
-                            Text(userAbout, modifier = Modifier.padding(16.dp), fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                        Surface(shape = RoundedCornerShape(12.dp), color = PaperWarm.copy(alpha = 0.5f), modifier = Modifier.clickable { editName = userName; editAbout = userAbout; showEditDialog = true }) {
+                            Text(userAbout, modifier = Modifier.padding(16.dp), fontSize = 14.sp, color = InkBlack, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                         }
                         
                         if (joinDate.isNotBlank()) {
                             Spacer(Modifier.height(16.dp))
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text("Joined $joinDate", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(14.dp), tint = Charcoal)
+                                Text("Joined $joinDate", fontSize = 12.sp, color = Charcoal)
                             }
                         }
                     }

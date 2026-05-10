@@ -1,10 +1,10 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,12 +20,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hobbyhive.data.UserRepository
 import com.example.hobbyhive.ui.components.HobbyButton
 import com.example.hobbyhive.ui.components.HobbyText
 import com.example.hobbyhive.ui.components.HobbyTextField
-import com.example.hobbyhive.ui.theme.DotGridBackground
-import com.example.hobbyhive.ui.theme.ElevatedCardShape
+import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -81,7 +81,7 @@ fun RegisterScreen(
     if (showTcDialog) {
         AlertDialog(
             onDismissRequest = { showTcDialog = false },
-            title = { Text("Terms & Conditions", fontWeight = FontWeight.Bold) },
+            title = { Text("Terms & Conditions", fontWeight = FontWeight.Black, color = InkBlack) },
             text = {
                 Column(
                     modifier = Modifier.verticalScroll(rememberScrollState()).heightIn(max = 400.dp)
@@ -95,48 +95,55 @@ fun RegisterScreen(
                         "6. Updates" to "We may update the app to improve functionality. Continued use constitutes acceptance of changes."
                     )
                     sections.forEach { (title, body) ->
-                        Text(title, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+                        Text(title, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = InkBlack)
                         Spacer(Modifier.height(4.dp))
-                        Text(body, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(body, fontSize = 13.sp, color = Charcoal)
                         Spacer(Modifier.height(12.dp))
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = { tcAccepted = true; showTcDialog = false }) {
-                    Text("Accept", fontWeight = FontWeight.Bold)
+                    Text("Accept", fontWeight = FontWeight.ExtraBold, color = HoneyGold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { tcAccepted = false; showTcDialog = false }) {
-                    Text("Decline")
+                    Text("Decline", color = Charcoal)
                 }
             }
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DotGridBackground()
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(40.dp))
-            androidx.compose.foundation.Image(
-                painter = androidx.compose.ui.res.painterResource(id = com.example.hobbyhive.R.drawable.logo),
-                contentDescription = "HobbyHive Logo",
-                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp))
-            )
+
+            // Bee mascot
+            BeeMascot(size = 80.dp)
+
             Spacer(Modifier.height(8.dp))
-            HobbyText(text = "Create Account", useGradient = true, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(32.dp))
+            Text(
+                "Create Account",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Black,
+                color = InkBlack,
+                letterSpacing = (-0.5).sp
+            )
+            Spacer(Modifier.height(28.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth(), shape = ElevatedCardShape,
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(22.dp),
+                border = BorderStroke(2.5.dp, InkBlack),
+                colors = CardDefaults.cardColors(containerColor = PaperWhite),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
-                Column(Modifier.padding(24.dp)) {
+                Column(Modifier.padding(22.dp)) {
                     HobbyTextField(value = fullName, onValueChange = { fullName = it; nameError = null }, label = "Full Name", leadingIcon = Icons.Default.Person, errorMessage = nameError)
                     Spacer(Modifier.height(16.dp))
                     HobbyTextField(value = email, onValueChange = { email = it; emailError = null }, label = "Email", leadingIcon = Icons.Default.Email, errorMessage = emailError, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
@@ -145,30 +152,30 @@ fun RegisterScreen(
                         value = password, onValueChange = { password = it; passwordError = null }, label = "Password", leadingIcon = Icons.Default.Lock, errorMessage = passwordError,
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        trailingIcon = { IconButton(onClick = { passwordVisible = !passwordVisible }) { Icon(if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility, contentDescription = null) } }
+                        trailingIcon = { IconButton(onClick = { passwordVisible = !passwordVisible }) { Icon(if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility, contentDescription = null, tint = InkBlack) } }
                     )
                     Spacer(Modifier.height(16.dp))
                     HobbyTextField(
                         value = confirmPassword, onValueChange = { confirmPassword = it; confirmError = null }, label = "Confirm Password", leadingIcon = Icons.Default.Lock, errorMessage = confirmError,
                         visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        trailingIcon = { IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) { Icon(if (confirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility, contentDescription = null) } }
+                        trailingIcon = { IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) { Icon(if (confirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility, contentDescription = null, tint = InkBlack) } }
                     )
                     Spacer(Modifier.height(12.dp))
 
                     // T&C
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = tcAccepted, onCheckedChange = { tcAccepted = it }, colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary))
+                        Checkbox(checked = tcAccepted, onCheckedChange = { tcAccepted = it }, colors = CheckboxDefaults.colors(checkedColor = HoneyYellow, checkmarkColor = InkBlack))
                         val annotated = buildAnnotatedString {
                             append("I agree to the ")
                             pushStringAnnotation("tc", "tc")
-                            withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)) { append("Terms & Conditions") }
+                            withStyle(SpanStyle(color = HoneyGold, fontWeight = FontWeight.ExtraBold)) { append("Terms & Conditions") }
                             pop()
                         }
                         TextButton(onClick = { showTcDialog = true }) { Text(annotated) }
                     }
-                    if (tcError != null) { Text(tcError!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 16.dp)) }
-                    if (generalError != null) { Spacer(Modifier.height(4.dp)); Text(generalError!!, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 4.dp)) }
+                    if (tcError != null) { Text(tcError!!, color = ErrorRed, fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 16.dp)) }
+                    if (generalError != null) { Spacer(Modifier.height(4.dp)); Text(generalError!!, color = ErrorRed, fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 4.dp)) }
                     Spacer(Modifier.height(24.dp))
 
                     HobbyButton(text = "Sign Up", onClick = {
@@ -195,8 +202,8 @@ fun RegisterScreen(
             }
             Spacer(Modifier.height(24.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Already have an account? ", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                TextButton(onClick = onNavigateToLogin) { Text("Log In", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
+                Text("Already have an account? ", fontSize = 14.sp, color = Charcoal)
+                TextButton(onClick = onNavigateToLogin) { Text("Log In", fontWeight = FontWeight.ExtraBold, color = HoneyGold, fontSize = 14.sp) }
             }
             Spacer(Modifier.height(32.dp))
         }

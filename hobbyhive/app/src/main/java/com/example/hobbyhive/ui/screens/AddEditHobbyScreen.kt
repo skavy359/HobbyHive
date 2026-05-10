@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.hobbyhive.data.HobbyRepository
 import com.example.hobbyhive.model.Hobby
 import com.example.hobbyhive.model.HobbyCategory
+import com.example.hobbyhive.ui.theme.*
 import com.example.hobbyhive.model.HobbyStatus
 import com.example.hobbyhive.ui.components.HobbyButton
 import com.example.hobbyhive.ui.components.HobbyTextField
@@ -162,7 +164,7 @@ fun AddEditHobbyScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    colors = CardDefaults.cardColors(containerColor = PaperWhite)
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text("Rating", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -177,7 +179,7 @@ fun AddEditHobbyScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    colors = CardDefaults.cardColors(containerColor = PaperWhite)
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

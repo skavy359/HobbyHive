@@ -1,10 +1,10 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,13 +17,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hobbyhive.data.UserPreferencesRepository
 import com.example.hobbyhive.data.UserRepository
 import com.example.hobbyhive.ui.components.HobbyButton
 import com.example.hobbyhive.ui.components.HobbyText
 import com.example.hobbyhive.ui.components.HobbyTextField
-import com.example.hobbyhive.ui.theme.DotGridBackground
-import com.example.hobbyhive.ui.theme.ElevatedCardShape
+import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -67,7 +67,7 @@ fun LoginScreen(
         return true
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         DotGridBackground()
         Column(
             modifier = Modifier
@@ -77,32 +77,35 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(60.dp))
-            androidx.compose.foundation.Image(
-                painter = androidx.compose.ui.res.painterResource(id = com.example.hobbyhive.R.drawable.logo),
-                contentDescription = "HobbyHive Logo",
-                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp))
-            )
-            Spacer(Modifier.height(16.dp))
-            HobbyText(
-                text = "Welcome Back",
-                useGradient = true,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            HobbyText(
-                text = "Sign in to continue your hobby journey",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(40.dp))
 
+            // Bee mascot instead of logo
+            BeeMascot(size = 90.dp)
+
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Welcome Back",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Black,
+                color = InkBlack,
+                letterSpacing = (-0.5).sp
+            )
+            Text(
+                text = "Sign in to continue your hobby journey",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Charcoal
+            )
+            Spacer(Modifier.height(36.dp))
+
+            // Card with sticker style
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = ElevatedCardShape,
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                shape = RoundedCornerShape(22.dp),
+                border = BorderStroke(2.5.dp, InkBlack),
+                colors = CardDefaults.cardColors(containerColor = PaperWhite),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
-                Column(Modifier.padding(24.dp)) {
+                Column(Modifier.padding(22.dp)) {
                     HobbyTextField(
                         value = email,
                         onValueChange = { email = it; emailError = null },
@@ -124,7 +127,8 @@ fun LoginScreen(
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
                                     if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = InkBlack
                                 )
                             }
                         }
@@ -138,12 +142,16 @@ fun LoginScreen(
                         Checkbox(
                             checked = rememberMe,
                             onCheckedChange = { rememberMe = it },
-                            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = HoneyYellow,
+                                checkmarkColor = InkBlack
+                            )
                         )
                         Text(
                             "Remember Me",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = InkBlack
                         )
                         Spacer(Modifier.weight(1f))
                     }
@@ -151,8 +159,9 @@ fun LoginScreen(
                     if (generalError != null) {
                         Text(
                             generalError!!,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
+                            color = ErrorRed,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
@@ -190,14 +199,15 @@ fun LoginScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     "Don't have an account? ",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontSize = 14.sp,
+                    color = Charcoal
                 )
                 TextButton(onClick = onNavigateToRegister) {
                     Text(
                         "Sign Up",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        fontWeight = FontWeight.ExtraBold,
+                        color = HoneyGold,
+                        fontSize = 14.sp
                     )
                 }
             }

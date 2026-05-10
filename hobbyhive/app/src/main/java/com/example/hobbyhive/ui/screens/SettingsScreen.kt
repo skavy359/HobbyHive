@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,7 +73,7 @@ fun SettingsScreen(
 
             item { SectionHeader("Appearance") }
             item {
-                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Column(Modifier.padding(8.dp)) {
                         listOf("system" to "System Default", "light" to "Light Mode", "dark" to "Dark Mode").forEach { (value, label) ->
                             Row(
@@ -89,11 +90,11 @@ fun SettingsScreen(
 
             item { SectionHeader("Notifications") }
             item {
-                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                         Column {
                             Text("Session Reminders", fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                            Text("Get notified when it's time to practice", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Get notified when it's time to practice", fontSize = 12.sp, color = Charcoal)
                         }
                         Switch(checked = notificationsEnabled, onCheckedChange = { scope.launch { userPreferencesRepository.setNotificationsEnabled(it) } })
                     }
@@ -102,7 +103,7 @@ fun SettingsScreen(
 
             item { SectionHeader("Account & Danger Zone") }
             item {
-                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                     Column {
                         OutlinedButton(
                             onClick = { showLogoutDialog = true },
@@ -137,7 +138,7 @@ fun SettingsScreen(
             item {
                 Column(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("HobbyHive v2.0", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                    Text("Powered by Compose & Room", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Powered by Compose & Room", fontSize = 12.sp, color = Charcoal)
                 }
             }
         }

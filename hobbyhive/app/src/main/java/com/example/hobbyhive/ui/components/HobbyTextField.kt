@@ -1,8 +1,10 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -11,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.hobbyhive.ui.theme.TextFieldShape
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// HobbyTextField — Styled OutlinedTextField wrapper
+// HobbyTextField — Chunky outlined text field
+// Thick border, warm paper fill
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -44,8 +47,7 @@ fun HobbyTextField(
                     Icon(
                         imageVector = leadingIcon,
                         contentDescription = label,
-                        tint = if (errorMessage != null) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (errorMessage != null) ErrorRed else InkBlack
                     )
                 }
             } else null,
@@ -58,20 +60,25 @@ fun HobbyTextField(
             keyboardActions = keyboardActions,
             enabled = enabled,
             readOnly = readOnly,
-            shape = TextFieldShape,
+            shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                errorBorderColor = MaterialTheme.colorScheme.error,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = InkBlack,
+                unfocusedBorderColor = InkBlack.copy(alpha = 0.5f),
+                errorBorderColor = ErrorRed,
+                focusedLabelColor = InkBlack,
+                unfocusedLabelColor = Charcoal,
+                cursorColor = HoneyYellow,
+                focusedContainerColor = PaperWhite,
+                unfocusedContainerColor = PaperWhite,
+                focusedTextColor = InkBlack,
+                unfocusedTextColor = InkBlack,
             ),
             modifier = Modifier.fillMaxWidth()
         )
         if (errorMessage != null) {
             Text(
                 text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
+                color = ErrorRed,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(start = 16.dp, top = 4.dp)
             )

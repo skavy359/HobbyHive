@@ -1,11 +1,10 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,12 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hobbyhive.ui.theme.ButtonShape
-import com.example.hobbyhive.ui.theme.GradientEnd
-import com.example.hobbyhive.ui.theme.GradientStart
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// HobbyButton — Gradient primary button
+// HobbyButton — Chunky outlined primary button
+// Thick border, flat bold color, playful
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -30,50 +28,39 @@ fun HobbyButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    gradientStart: Color = GradientStart,
-    gradientEnd: Color = GradientEnd
+    gradientStart: Color = HoneyYellow,
+    gradientEnd: Color = HoneyGold
 ) {
-    val gradient = Brush.horizontalGradient(
-        colors = listOf(gradientStart, gradientEnd)
-    )
-
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
         enabled = enabled && !isLoading,
-        shape = ButtonShape,
+        shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent
+            containerColor = if (enabled && !isLoading) HoneyYellow else Color.Gray.copy(alpha = 0.3f),
+            disabledContainerColor = Color.Gray.copy(alpha = 0.3f)
         ),
+        border = BorderStroke(2.5.dp, if (enabled) InkBlack else Color.Gray),
         contentPadding = PaddingValues()
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(ButtonShape)
-                .background(
-                    brush = if (enabled && !isLoading) gradient
-                    else Brush.horizontalGradient(
-                        listOf(Color.Gray.copy(alpha = 0.4f), Color.Gray.copy(alpha = 0.3f))
-                    )
-                ),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             if (isLoading) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp
+                    color = InkBlack,
+                    strokeWidth = 2.5.dp
                 )
             } else {
                 Text(
                     text = text,
-                    color = Color.White,
+                    color = InkBlack,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 0.5.sp
                 )
             }

@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -60,7 +61,7 @@ fun NotificationsScreen(
                 }
             } else {
                 items(hobbies, key = { it.id }) { hobby ->
-                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack)) {
                         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                             Surface(modifier = Modifier.size(48.dp), shape = RoundedCornerShape(14.dp), color = ThemeOrange.copy(alpha = 0.1f)) {
                                 Box(contentAlignment = Alignment.Center) { Text(hobby.category.emoji, fontSize = 24.sp) }
@@ -68,7 +69,7 @@ fun NotificationsScreen(
                             Spacer(Modifier.width(16.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(hobby.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(if (hobby.reminderEnabled) "Reminder active" else "Alerts paused", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(if (hobby.reminderEnabled) "Reminder active" else "Alerts paused", fontSize = 12.sp, color = Charcoal)
                             }
                             Switch(
                                 checked = hobby.reminderEnabled,

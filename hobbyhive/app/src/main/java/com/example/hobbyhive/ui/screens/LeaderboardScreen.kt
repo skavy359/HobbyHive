@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,7 +68,7 @@ fun LeaderboardScreen(
                 listOf("Top Hours", "Most Sessions").forEachIndexed { index, text ->
                     val isSelected = activeTab == index
                     val bg = if (isSelected) Brush.horizontalGradient(listOf(LeaderAmber, LeaderRose)) else Brush.horizontalGradient(listOf(Color.Transparent, Color.Transparent))
-                    val txtColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                    val txtColor = if (isSelected) Color.White else Charcoal
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
@@ -121,7 +122,7 @@ fun LeaderboardScreen(
             item {
                 Card(
                     shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    colors = CardDefaults.cardColors(containerColor = PaperWhite)
                 ) {
                     Column(Modifier.padding(vertical = 8.dp)) {
                         Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
@@ -129,8 +130,8 @@ fun LeaderboardScreen(
                                 Icon(Icons.Default.Adjust, null, tint = LeaderAmber, modifier = Modifier.size(20.dp))
                                 Text("Full Rankings", fontWeight = FontWeight.Black, fontSize = 16.sp)
                             }
-                            Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp)) {
-                                Text("${data.size} Hobbies", Modifier.padding(horizontal = 10.dp, vertical = 4.dp), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Surface(color = PaperWarm, shape = RoundedCornerShape(8.dp)) {
+                                Text("${data.size} Hobbies", Modifier.padding(horizontal = 10.dp, vertical = 4.dp), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Charcoal)
                             }
                         }
                         
@@ -144,20 +145,20 @@ fun LeaderboardScreen(
                             ) {
                                 Text(
                                     text = when (entry.rank) { 1 -> "🥇"; 2 -> "🥈"; 3 -> "🥉"; else -> "#${entry.rank}" },
-                                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(30.dp), textAlign = TextAlign.Center
+                                    fontWeight = FontWeight.Bold, color = Charcoal, modifier = Modifier.width(30.dp), textAlign = TextAlign.Center
                                 )
-                                Surface(modifier = Modifier.size(48.dp), shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                                Surface(modifier = Modifier.size(48.dp), shape = RoundedCornerShape(14.dp), color = PaperWarm) {
                                     Box(contentAlignment = Alignment.Center) { Text(entry.emoji, fontSize = 24.sp) }
                                 }
                                 Text(entry.hobbyName, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f))
-                                Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(12.dp)) {
+                                Surface(color = PaperWarm, shape = RoundedCornerShape(12.dp)) {
                                     Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                         Text("${entry.value}", fontWeight = FontWeight.Black, fontSize = 16.sp)
-                                        Text(entry.metric.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        Text(entry.metric.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Charcoal)
                                     }
                                 }
                             }
-                            if (i < data.lastIndex) HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.padding(start = 70.dp, end = 20.dp))
+                            if (i < data.lastIndex) HorizontalDivider(color = PaperWarm, modifier = Modifier.padding(start = 70.dp, end = 20.dp))
                         }
                     }
                 }

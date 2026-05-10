@@ -1,25 +1,24 @@
 package com.example.hobbyhive.ui.components
 
-import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// GradientStatCard — Vibrant stat display card
+// GradientStatCard — Sticker-style stat card
+// Flat color fill, chunky black border, bold values
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -31,29 +30,19 @@ fun GradientStatCard(
     modifier: Modifier = Modifier,
     subtitle: String? = null
 ) {
+    val bgColor = gradientColors.firstOrNull() ?: HoneyYellow
+
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = bgColor.copy(alpha = 0.35f)),
+        border = BorderStroke(2.5.dp, InkBlack)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.linearGradient(gradientColors))
-                .padding(20.dp)
+                .padding(16.dp)
         ) {
-            // Decorative blur circle
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = 20.dp, y = (-20).dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f))
-                    .blur(24.dp)
-            )
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -62,41 +51,42 @@ fun GradientStatCard(
                 Column {
                     Text(
                         text = title,
-                        color = Color.White.copy(alpha = 0.85f),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp,
+                        color = InkBlack,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.2.sp,
                         maxLines = 1,
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = value,
-                        color = Color.White,
-                        fontSize = 32.sp,
+                        color = InkBlack,
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Black
                     )
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
-                            color = Color.White.copy(alpha = 0.7f),
-                            fontSize = 12.sp,
+                            color = Charcoal,
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
 
                 Surface(
-                    modifier = Modifier.size(46.dp),
+                    modifier = Modifier.size(42.dp),
                     shape = RoundedCornerShape(14.dp),
-                    color = Color.White.copy(alpha = 0.2f)
+                    color = Color.White.copy(alpha = 0.6f),
+                    border = BorderStroke(2.dp, InkBlack)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                            tint = InkBlack,
+                            modifier = Modifier.size(22.dp)
                         )
                     }
                 }

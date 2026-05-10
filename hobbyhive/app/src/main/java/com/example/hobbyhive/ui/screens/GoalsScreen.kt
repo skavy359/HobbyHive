@@ -1,5 +1,6 @@
 package com.example.hobbyhive.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +42,8 @@ fun GoalsScreen(viewModel: GoalsViewModel = viewModel()) {
                 badgeIcon = Icons.Default.Flag, badgeText = "Goal Tracking",
                 gradientColors = listOf(GoalIndigo, GoalViolet),
                 actionButton = {
-                    Button(onClick = { showCreateDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.2f))) {
-                        Icon(Icons.Default.Add, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("New Goal", fontWeight = FontWeight.Bold)
+                    Button(onClick = { showCreateDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = PaperWhite, contentColor = InkBlack), border = BorderStroke(2.dp, InkBlack)) {
+                        Icon(Icons.Default.Add, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("New Goal", fontWeight = FontWeight.ExtraBold)
                     }
                 }
             )
@@ -68,15 +69,15 @@ fun GoalsScreen(viewModel: GoalsViewModel = viewModel()) {
                     GoalStatus.IN_PROGRESS -> GoalIndigo; GoalStatus.COMPLETED -> SuccessGreen
                     GoalStatus.AT_RISK -> AccentAmber; GoalStatus.FAILED -> ErrorRed
                 }
-                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
+                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PaperWhite), border = BorderStroke(2.dp, InkBlack), modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(20.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Text(entry.hobbyEmoji, fontSize = 20.sp)
-                                    Text(entry.goal.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    Text(entry.goal.title, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = InkBlack)
                                 }
-                                Text(entry.hobbyName, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(entry.hobbyName, fontSize = 12.sp, color = Charcoal)
                             }
                             BadgeChip(entry.goal.status.displayName, statusColor)
                         }
@@ -86,12 +87,12 @@ fun GoalsScreen(viewModel: GoalsViewModel = viewModel()) {
                             Column(Modifier.weight(1f)) {
                                 GradientProgressBar(progress = entry.goal.progressPercent / 100f, colors = listOf(GoalIndigo, GoalViolet))
                                 Spacer(Modifier.height(6.dp))
-                                Text("${entry.goal.currentValue} / ${entry.goal.targetValue} ${entry.goal.unit}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("${entry.goal.currentValue} / ${entry.goal.targetValue} ${entry.goal.unit}", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Charcoal)
                             }
                         }
                         if (entry.goal.description.isNotBlank()) {
                             Spacer(Modifier.height(8.dp))
-                            Text(entry.goal.description, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(entry.goal.description, fontSize = 13.sp, color = Charcoal)
                         }
                         Spacer(Modifier.height(12.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

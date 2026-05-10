@@ -1,6 +1,8 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -9,9 +11,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// EmptyState — No-data placeholder composable
+// EmptyState — Playful no-data placeholder
+// Sticker-style, fun typography
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -30,17 +34,19 @@ fun EmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Sticker-style icon container
         Surface(
             modifier = Modifier.size(80.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.surfaceVariant
+            shape = RoundedCornerShape(24.dp),
+            color = HoneyLight,
+            border = BorderStroke(2.5.dp, InkBlack)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                    tint = InkBlack
                 )
             }
         }
@@ -50,9 +56,9 @@ fun EmptyState(
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = InkBlack
         )
 
         Spacer(Modifier.height(8.dp))
@@ -61,19 +67,21 @@ fun EmptyState(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = Charcoal
         )
 
         if (actionLabel != null && onAction != null) {
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = onAction,
-                shape = MaterialTheme.shapes.medium,
+                shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                    containerColor = HoneyYellow,
+                    contentColor = InkBlack
+                ),
+                border = BorderStroke(2.dp, InkBlack)
             ) {
-                Text(actionLabel, fontWeight = FontWeight.Bold)
+                Text(actionLabel, fontWeight = FontWeight.ExtraBold)
             }
         }
     }

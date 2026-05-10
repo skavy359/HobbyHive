@@ -1,6 +1,7 @@
 package com.example.hobbyhive.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -102,25 +103,25 @@ fun AchievementCard(achievement: Achievement) {
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (achievement.isUnlocked) color.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = if (achievement.isUnlocked) color.copy(alpha = 0.05f) else PaperWarm.copy(alpha = 0.5f)
         ),
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (achievement.isUnlocked) color.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surfaceVariant),
+        border = androidx.compose.foundation.BorderStroke(1.dp, if (achievement.isUnlocked) color.copy(alpha = 0.3f) else PaperWarm),
         modifier = Modifier.fillMaxWidth().alpha(if (achievement.isUnlocked) 1f else 0.6f)
     ) {
         Row(Modifier.padding(20.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Surface(
                 modifier = Modifier.size(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                color = if (achievement.isUnlocked) color.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant
+                color = if (achievement.isUnlocked) color.copy(alpha = 0.1f) else PaperWarm
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(iconVector, null, tint = if (achievement.isUnlocked) color else MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(28.dp))
+                    Icon(iconVector, null, tint = if (achievement.isUnlocked) color else Charcoal, modifier = Modifier.size(28.dp))
                 }
             }
             Column(Modifier.weight(1f)) {
-                Text(achievement.title, fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (achievement.isUnlocked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(achievement.progress.uppercase(), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (achievement.isUnlocked) color else MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(bottom = 4.dp))
-                Text(achievement.description, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+                Text(achievement.title, fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (achievement.isUnlocked) InkBlack else Charcoal)
+                Text(achievement.progress.uppercase(), fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (achievement.isUnlocked) color else Charcoal, modifier = Modifier.padding(bottom = 4.dp))
+                Text(achievement.description, fontSize = 13.sp, color = Charcoal, lineHeight = 18.sp)
                 
                 if (!achievement.isUnlocked && achievement.targetValue > 0) {
                     Spacer(Modifier.height(12.dp))

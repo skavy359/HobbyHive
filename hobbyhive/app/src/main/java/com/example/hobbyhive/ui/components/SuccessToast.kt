@@ -1,7 +1,9 @@
 package com.example.hobbyhive.ui.components
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,11 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hobbyhive.ui.theme.ErrorRed
-import com.example.hobbyhive.ui.theme.SuccessGreen
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// SuccessToast — Animated slide-in banner
+// SuccessToast — Sticker-style toast banner
+// Chunky border, playful colors
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -37,17 +39,17 @@ fun SuccessToast(
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
         modifier = modifier
     ) {
-        val bgColor = if (isError) ErrorRed.copy(alpha = 0.1f) else SuccessGreen.copy(alpha = 0.1f)
-        val borderColor = if (isError) ErrorRed.copy(alpha = 0.3f) else SuccessGreen.copy(alpha = 0.3f)
+        val bgColor = if (isError) PinkCardBg else GreenCardBg
         val textColor = if (isError) ErrorRed else SuccessGreen
         val icon = if (isError) Icons.Default.Close else Icons.Default.Check
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(14.dp))
                 .background(bgColor)
-                .padding(16.dp),
+                .border(2.dp, InkBlack, RoundedCornerShape(14.dp))
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -59,9 +61,9 @@ fun SuccessToast(
             )
             Text(
                 text = message,
-                color = textColor,
+                color = InkBlack,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Bold
             )
         }
     }

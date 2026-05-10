@@ -11,11 +11,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.example.hobbyhive.ui.theme.GradientEnd
-import com.example.hobbyhive.ui.theme.GradientStart
+import com.example.hobbyhive.ui.theme.HoneyGold
+import com.example.hobbyhive.ui.theme.HoneyYellow
+import com.example.hobbyhive.ui.theme.InkBlack
 
 // ═══════════════════════════════════════════════════
-// HobbyText — Custom text with optional gradient
+// HobbyText — Custom text with optional honey gradient
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -23,7 +24,7 @@ fun HobbyText(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
-    color: Color = MaterialTheme.colorScheme.onBackground,
+    color: Color = InkBlack,
     fontWeight: FontWeight? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     letterSpacing: TextUnit = TextUnit.Unspecified,
@@ -36,7 +37,7 @@ fun HobbyText(
             modifier = modifier,
             style = style.copy(
                 brush = Brush.linearGradient(
-                    colors = listOf(GradientStart, GradientEnd),
+                    colors = listOf(HoneyYellow, HoneyGold),
                     start = Offset.Zero,
                     end = Offset(200f, 0f)
                 ),

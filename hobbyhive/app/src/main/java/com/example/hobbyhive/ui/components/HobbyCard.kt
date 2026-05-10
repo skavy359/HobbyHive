@@ -1,6 +1,8 @@
 package com.example.hobbyhive.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
@@ -12,14 +14,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.hobbyhive.model.Hobby
-import com.example.hobbyhive.ui.theme.AccentTeal
-import com.example.hobbyhive.ui.theme.CardShape
-import com.example.hobbyhive.ui.theme.ChipShape
+import com.example.hobbyhive.ui.theme.*
 
 // ═══════════════════════════════════════════════════
-// HobbyCard — Hobby list/grid item card
+// HobbyCard — Sticker-style hobby list card
+// Thick border, playful layout, warm colors
 // ═══════════════════════════════════════════════════
 
 @Composable
@@ -31,25 +33,27 @@ fun HobbyCard(
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        shape = CardShape,
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = PaperWhite
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(2.5.dp, InkBlack),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Thumbnail
+            // Thumbnail — emoji or image
             Card(
-                modifier = Modifier.size(64.dp),
-                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.size(60.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+                    containerColor = HoneyLight
+                ),
+                border = BorderStroke(2.dp, InkBlack)
             ) {
                 if (hobby.imageUri != null) {
                     AsyncImage(
@@ -57,7 +61,7 @@ fun HobbyCard(
                         contentDescription = hobby.name,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(MaterialTheme.shapes.medium),
+                            .clip(RoundedCornerShape(16.dp)),
                         contentScale = ContentScale.Crop
                     )
                 } else {
@@ -67,62 +71,61 @@ fun HobbyCard(
                     ) {
                         Text(
                             text = hobby.category.emoji,
-                            style = MaterialTheme.typography.headlineMedium
+                            fontSize = 28.sp
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             // Content
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = hobby.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = InkBlack
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Category chip
+                // Category sticker chip
                 Surface(
-                    shape = ChipShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    modifier = Modifier.padding(vertical = 2.dp)
+                    shape = RoundedCornerShape(50),
+                    color = LimeCardBg,
+                    border = BorderStroke(1.5.dp, InkBlack)
                 ) {
                     Text(
                         text = "${hobby.category.emoji} ${hobby.category.displayName}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = InkBlack,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Progress bar
+                // Progress bar with chunky style
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    LinearProgressIndicator(
-                        progress = { hobby.progress / 100f },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(6.dp)
-                            .clip(MaterialTheme.shapes.extraSmall),
-                        color = AccentTeal,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    GradientProgressBar(
+                        progress = hobby.progress / 100f,
+                        colors = listOf(HoneyYellow, HoneyGold),
+                        modifier = Modifier.weight(1f),
+                        height = 8.dp
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "${hobby.progress}%",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = InkBlack
                     )
                 }
             }
@@ -134,12 +137,14 @@ fun HobbyCard(
                 RatingBar(
                     rating = hobby.rating,
                     starSize = 16.dp,
-                    maxStars = 5
+                    maxStars = 5,
+                    activeColor = HoneyYellow
                 )
                 Text(
                     text = String.format("%.1f", hobby.rating),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = InkBlack,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
