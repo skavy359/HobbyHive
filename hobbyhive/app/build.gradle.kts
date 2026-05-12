@@ -43,6 +43,7 @@ android {
 dependencies {
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
+    implementation("io.appwrite:sdk-for-android:6.1.0")
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)

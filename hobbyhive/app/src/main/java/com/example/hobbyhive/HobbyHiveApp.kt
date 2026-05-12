@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import com.example.hobbyhive.model.AppwriteClient
 
 class HobbyHiveApp : Application() {
 
@@ -15,6 +16,7 @@ class HobbyHiveApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppwriteClient.init(this)
         createNotificationChannels()
     }
 
