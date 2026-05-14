@@ -26,7 +26,7 @@ import com.example.hobbyhive.model.HobbyGroup
         Session::class, Goal::class, StudyEvent::class,
         ForumPost::class, ForumComment::class, HobbyGroup::class
     ],
-    version = 3,
+     version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

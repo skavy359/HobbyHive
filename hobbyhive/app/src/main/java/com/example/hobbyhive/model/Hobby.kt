@@ -14,6 +14,7 @@ import com.example.hobbyhive.data.Converters
 data class Hobby(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val appwriteId: String? = null,
     val name: String,
     val description: String = "",
     val category: HobbyCategory = HobbyCategory.OTHER,

@@ -5,30 +5,30 @@ import com.example.hobbyhive.model.ForumPost
 import com.example.hobbyhive.model.HobbyGroup
 import kotlinx.coroutines.flow.Flow
 
-class CommunityRepository(private val dao: CommunityDao) {
+open class CommunityRepository(protected val dao: CommunityDao) {
 
-    fun getAllPosts(): Flow<List<ForumPost>> = dao.getAllPosts()
+    open fun getAllPosts(): Flow<List<ForumPost>> = dao.getAllPosts()
 
-    fun getPostById(postId: Long): Flow<ForumPost?> = dao.getPostById(postId)
+    open fun getPostById(postId: Long): Flow<ForumPost?> = dao.getPostById(postId)
 
-    suspend fun insertPost(post: ForumPost) {
+    open suspend fun insertPost(post: ForumPost) {
         dao.insertPost(post)
     }
 
-    suspend fun upvotePost(post: ForumPost) {
+    open suspend fun upvotePost(post: ForumPost) {
         dao.updatePost(post.copy(upvotes = post.upvotes + 1))
     }
 
-    fun getCommentsForPost(postId: Long): Flow<List<ForumComment>> = dao.getCommentsForPost(postId)
+    open fun getCommentsForPost(postId: Long): Flow<List<ForumComment>> = dao.getCommentsForPost(postId)
 
-    suspend fun addComment(comment: ForumComment) {
+    open suspend fun addComment(comment: ForumComment) {
         dao.insertComment(comment)
         dao.incrementRepliesCount(comment.postId)
     }
 
-    fun getAllGroups(): Flow<List<HobbyGroup>> = dao.getAllGroups()
+    open fun getAllGroups(): Flow<List<HobbyGroup>> = dao.getAllGroups()
 
-    suspend fun toggleGroupJoinStatus(group: HobbyGroup) {
+    open suspend fun toggleGroupJoinStatus(group: HobbyGroup) {
         val newCount = if (group.isJoined) group.membersCount - 1 else group.membersCount + 1
         dao.updateGroup(group.copy(isJoined = !group.isJoined, membersCount = newCount))
     }

@@ -25,6 +25,9 @@ interface CommunityDao {
     @Update
     suspend fun updatePost(post: ForumPost)
 
+    @androidx.room.Delete
+    suspend fun deletePost(post: ForumPost)
+
     @Query("UPDATE forum_posts SET repliesCount = repliesCount + 1 WHERE id = :postId")
     suspend fun incrementRepliesCount(postId: Long)
 

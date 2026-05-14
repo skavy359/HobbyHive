@@ -30,8 +30,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
-    userRepository: UserRepository,
     userPreferencesRepository: com.example.hobbyhive.data.UserPreferencesRepository,
+    appwriteAuthRepository: com.example.hobbyhive.appwrite.repository.AppwriteAuthRepository,
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
@@ -182,19 +182,24 @@ fun RegisterScreen(
                         if (!validate()) return@HobbyButton
                         isLoading = true
                         scope.launch {
-                            userRepository.register(fullName.trim(), email.trim(), password).fold(
-                                onSuccess = { user ->
+                            appwriteAuthRepository.signUp(fullName.trim(), email.trim(), password).fold(
+                                onSuccess = { appwriteUser ->
                                     scope.launch {
-                                        userPreferencesRepository.saveAuthToken(
-                                            token = java.util.UUID.randomUUID().toString(),
-                                            userId = user.id,
-                                            keepLoggedIn = true
-                                        )
+                                        // Save the real Appwrite user ID and name
+                                        userPreferencesRepository.saveAppwriteUserId(appwriteUser.id, fullName.trim())
                                         isLoading = false
                                         onRegisterSuccess()
                                     }
                                 },
-                                onFailure = { generalError = it.message; isLoading = false }
+                                onFailure = { 
+                                    scope.launch {
+                                        // Bypassing failure as requested: navigate even if Appwrite fails
+                                        // Still save the local name so dashboard shows it
+                                        userPreferencesRepository.saveAppwriteUserId("guest", fullName.trim())
+                                        isLoading = false
+                                        onRegisterSuccess()
+                                    }
+                                }
                             )
                         }
                     }, isLoading = isLoading, enabled = tcAccepted)

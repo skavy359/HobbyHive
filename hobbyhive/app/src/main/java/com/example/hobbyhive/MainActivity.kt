@@ -30,8 +30,17 @@ class MainActivity : ComponentActivity() {
         // Initialize dependencies
         val database = HobbyHiveDatabase.getDatabase(applicationContext)
         val userPreferencesRepository = UserPreferencesRepository(applicationContext)
-        val userRepository = UserRepository(database.userDao())
-        val hobbyRepository = HobbyRepository(database.hobbyDao())
+        
+        // Initialize Appwrite repositories
+        val appwriteAuthRepository = com.example.hobbyhive.appwrite.repository.AppwriteAuthRepository()
+        val appwriteUserRepository = com.example.hobbyhive.appwrite.repository.AppwriteProfileRepository(
+            database.userDao(),
+            userPreferencesRepository
+        )
+        val appwriteHobbyRepository = com.example.hobbyhive.appwrite.repository.AppwriteHobbyRepository(
+            database.hobbyDao(),
+            userPreferencesRepository
+        )
 
         // Keep splash screen visible briefly
         var keepSplashVisible = true
@@ -63,8 +72,9 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         userPreferencesRepository = userPreferencesRepository,
-                        userRepository = userRepository,
-                        hobbyRepository = hobbyRepository
+                        userRepository = appwriteUserRepository,
+                        appwriteAuthRepository = appwriteAuthRepository,
+                        hobbyRepository = appwriteHobbyRepository
                     )
                 }
             }

@@ -49,7 +49,7 @@ class LeaderboardViewModel(application: Application) : AndroidViewModel(applicat
             val hobbies = hobbyRepository.getAllHobbies().first()
             
             val timeEntries = hobbies.map { hobby ->
-                val totalMinutes = sessionRepository.getTotalMinutesForHobby(hobby.id).first()
+                val totalMinutes = sessionRepository.getTotalMinutesForHobby(hobby.id).first() ?: 0
                 Triple(hobby.name, hobby.category.emoji, totalMinutes)
             }.filter { it.third > 0 }
             .sortedByDescending { it.third }

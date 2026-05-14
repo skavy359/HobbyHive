@@ -6,7 +6,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.hobbyhive.data.HobbyRepository
+import com.example.hobbyhive.appwrite.repository.AppwriteAuthRepository
+import com.example.hobbyhive.appwrite.repository.AppwriteHobbyRepository
 import com.example.hobbyhive.data.UserPreferencesRepository
 import com.example.hobbyhive.data.UserRepository
 import com.example.hobbyhive.ui.screens.*
@@ -19,8 +20,9 @@ import com.example.hobbyhive.ui.screens.*
 fun NavGraph(
     navController: NavHostController,
     userPreferencesRepository: UserPreferencesRepository,
-    userRepository: UserRepository,
-    hobbyRepository: HobbyRepository,
+    userRepository: UserRepository, // Keep for legacy UI components if needed
+    appwriteAuthRepository: AppwriteAuthRepository,
+    hobbyRepository: AppwriteHobbyRepository,
     startDestination: String = Routes.Splash.route
 ) {
     NavHost(
@@ -66,6 +68,7 @@ fun NavGraph(
             LoginScreen(
                 userRepository = userRepository,
                 userPreferencesRepository = userPreferencesRepository,
+                appwriteAuthRepository = appwriteAuthRepository,
                 onLoginSuccess = {
                     navController.navigate(Routes.Home.route) {
                         popUpTo(Routes.Login.route) { inclusive = true }
@@ -80,8 +83,8 @@ fun NavGraph(
         // Register
         composable(Routes.Register.route) {
             RegisterScreen(
-                userRepository = userRepository,
                 userPreferencesRepository = userPreferencesRepository,
+                appwriteAuthRepository = appwriteAuthRepository,
                 onRegisterSuccess = {
                     navController.navigate(Routes.Home.route) {
                         popUpTo(Routes.Register.route) { inclusive = true }

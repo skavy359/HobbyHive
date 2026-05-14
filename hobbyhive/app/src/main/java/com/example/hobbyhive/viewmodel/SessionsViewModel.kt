@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hobbyhive.data.HobbyHiveDatabase
-import com.example.hobbyhive.data.HobbyRepository
-import com.example.hobbyhive.data.SessionRepository
 import com.example.hobbyhive.model.Hobby
 import com.example.hobbyhive.model.Session
 import kotlinx.coroutines.flow.*
@@ -33,8 +31,16 @@ data class SessionWithHobbyName(
 class SessionsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = HobbyHiveDatabase.getDatabase(application)
-    val sessionRepository = SessionRepository(database.sessionDao())
-    val hobbyRepository = HobbyRepository(database.hobbyDao())
+    private val userPrefs = com.example.hobbyhive.data.UserPreferencesRepository(application)
+    
+    val sessionRepository = com.example.hobbyhive.appwrite.repository.AppwriteSessionRepository(
+        database.sessionDao(),
+        userPrefs
+    )
+    val hobbyRepository = com.example.hobbyhive.appwrite.repository.AppwriteHobbyRepository(
+        database.hobbyDao(),
+        userPrefs
+    )
 
     private val _uiState = MutableStateFlow(SessionsUiState())
     val uiState: StateFlow<SessionsUiState> = _uiState.asStateFlow()
@@ -45,6 +51,14 @@ class SessionsViewModel(application: Application) : AndroidViewModel(application
         loadSessions()
         loadHobbies()
         loadStats()
+        
+        // Initial sync
+        viewModelScope.launch {
+            val userId = userPrefs.appwriteUserId.first()
+            if (!userId.isNullOrEmpty()) {
+                sessionRepository.fetchAndSync(userId)
+            }
+        }
     }
 
     private fun loadSessions() {
@@ -83,7 +97,7 @@ class SessionsViewModel(application: Application) : AndroidViewModel(application
             combine(
                 sessionRepository.getSessionCount(),
                 sessionRepository.getTotalMinutes()
-            ) { count, minutes -> count to minutes }
+            ) { count, minutes -> count to (minutes ?: 0) }
                 .collect { (count, minutes) ->
                     _uiState.update { it.copy(totalSessions = count, totalMinutes = minutes) }
                 }
@@ -97,8 +111,15 @@ class SessionsViewModel(application: Application) : AndroidViewModel(application
 
     fun logSession(hobbyId: Long, durationMinutes: Int, sessionDate: Long, notes: String) {
         viewModelScope.launch {
-            sessionRepository.insertSession(
-                Session(
+            // Find hobby doc ID
+            val hobby = database.hobbyDao().getHobbyById(hobbyId).first()
+            val hobbyDocId = hobby?.appwriteId ?: ""
+            val userId = userPrefs.appwriteUserId.first() ?: ""
+
+            sessionRepository.logSession(
+                userId = userId,
+                hobbyDocumentId = hobbyDocId,
+                session = Session(
                     hobbyId = hobbyId,
                     durationMinutes = durationMinutes,
                     sessionDate = sessionDate,
@@ -111,14 +132,16 @@ class SessionsViewModel(application: Application) : AndroidViewModel(application
 
     fun updateSession(session: Session) {
         viewModelScope.launch {
-            sessionRepository.updateSession(session)
+            // updateSession not fully implemented in AppwriteSessionRepository yet, but we'll use Room for now
+            // since we primarily log/delete sessions.
+            database.sessionDao().update(session)
             showSuccess("Session updated!")
         }
     }
 
     fun deleteSession(session: Session) {
         viewModelScope.launch {
-            sessionRepository.deleteSession(session)
+            sessionRepository.deleteSession(session.appwriteId ?: "", session)
             showSuccess("Session deleted")
         }
     }

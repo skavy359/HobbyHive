@@ -48,7 +48,7 @@ class AnalyticsViewModel(application: Application) : AndroidViewModel(applicatio
                 hobbyRepository.getHobbyCount(),
                 hobbyRepository.getAllHobbies()
             ) { totalMin, totalSess, hobbyCount, hobbies ->
-                AnalyticsData(totalMin, totalSess, hobbyCount, hobbies)
+                AnalyticsData(totalMin ?: 0, totalSess, hobbyCount, hobbies)
             }.collectLatest { data ->
                 val totalMin = data.totalMin
                 val totalSess = data.totalSess
@@ -57,7 +57,7 @@ class AnalyticsViewModel(application: Application) : AndroidViewModel(applicatio
 
                 // Top hobbies
                 val topEntries = hobbies.map { h ->
-                    val min = sessionRepository.getTotalMinutesForHobby(h.id).first()
+                    val min = sessionRepository.getTotalMinutesForHobby(h.id).first() ?: 0
                     HobbyTimeEntry(h.name, h.category.emoji, min)
                 }.filter { it.totalMinutes > 0 }.sortedByDescending { it.totalMinutes }.take(5)
 

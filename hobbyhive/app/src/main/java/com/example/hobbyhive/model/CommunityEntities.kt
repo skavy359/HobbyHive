@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class ForumPost(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val appwriteId: String? = null,
     val title: String,
     val content: String,
     val authorName: String,
@@ -20,6 +21,7 @@ data class ForumPost(
 data class ForumComment(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val appwriteId: String? = null,
     val postId: Long,
     val authorName: String,
     val content: String,

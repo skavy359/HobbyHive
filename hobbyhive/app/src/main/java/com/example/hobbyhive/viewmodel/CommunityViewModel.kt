@@ -18,55 +18,87 @@ import kotlinx.coroutines.launch
 
 class CommunityViewModel(application: Application) : AndroidViewModel(application) {
     private val database = HobbyHiveDatabase.getDatabase(application)
-    private val repository = CommunityRepository(database.communityDao())
     private val userPrefs = UserPreferencesRepository(application)
-    private val userRepository = UserRepository(database.userDao())
+    
+    // Appwrite Repositories
+    private val communityRepository = com.example.hobbyhive.appwrite.repository.AppwriteCommunityRepository(
+        database.communityDao(),
+        userPrefs
+    )
+    private val realtimeRepository = com.example.hobbyhive.appwrite.repository.AppwriteRealtimeRepository()
+    
+    private val userRepository = UserRepository(database.userDao()) // Keep for getting current user's name locally
 
-    val posts: StateFlow<List<ForumPost>> = repository.getAllPosts()
+    val posts: StateFlow<List<ForumPost>> = communityRepository.getAllPosts()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val groups: StateFlow<List<HobbyGroup>> = repository.getAllGroups()
+    val groups: StateFlow<List<HobbyGroup>> = communityRepository.getAllGroups()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private var realtimeJob: kotlinx.coroutines.Job? = null
 
     init {
         viewModelScope.launch {
-            if (repository.getAllGroups().first().isEmpty()) {
-                repository.seedInitialGroups()
+            // Initial sync from Appwrite
+            communityRepository.fetchAndSyncPosts()
+            communityRepository.fetchAndSyncGroups()
+        }
+
+        // Start listening to live post updates
+        startRealtimeSubscription()
+    }
+
+    private fun startRealtimeSubscription() {
+        realtimeJob = viewModelScope.launch {
+            realtimeRepository.subscribeToForumPosts().collect { event ->
+                // The underlying Room database is our cache.
+                // Instead of manually parsing the RealtimeEvent and updating the UI state here,
+                // we can just re-trigger a fetchAndSync() when any event occurs.
+                // This keeps the offline-first architecture clean.
+                communityRepository.fetchAndSyncPosts()
             }
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        realtimeJob?.cancel() // Always clean up WebSocket
+    }
+
     fun upvotePost(post: ForumPost) {
         viewModelScope.launch {
-            repository.upvotePost(post)
+            communityRepository.upvotePost(post)
         }
     }
 
     fun toggleGroupJoin(group: HobbyGroup) {
         viewModelScope.launch {
-            repository.toggleGroupJoinStatus(group)
+            communityRepository.toggleGroupJoinStatus(group)
         }
     }
 
     fun createPost(title: String, content: String, category: String) {
         viewModelScope.launch {
-            val userId = userPrefs.userId.first()
-            val authorName = userId?.let { userRepository.getUserById(it)?.fullName } ?: "Anonymous"
-            repository.insertPost(
-                ForumPost(title = title, content = content, authorName = authorName, category = category)
-            )
+            val userId = userPrefs.userId.first() ?: return@launch
+            val authorName = userRepository.getUserById(userId)?.fullName ?: "Anonymous"
+            communityRepository.createPost(userId.toString(), authorName, title, content, category)
         }
     }
 
-    fun getPost(postId: Long) = repository.getPostById(postId)
+    fun getPost(postId: Long) = database.communityDao().getPostById(postId)
 
-    fun getComments(postId: Long) = repository.getCommentsForPost(postId)
+    fun getComments(postId: Long) = communityRepository.getCommentsForPost(postId)
 
     fun addComment(postId: Long, content: String) {
         viewModelScope.launch {
-            val userId = userPrefs.userId.first()
-            val authorName = userId?.let { userRepository.getUserById(it)?.fullName } ?: "Anonymous"
-            repository.addComment(ForumComment(postId = postId, authorName = authorName, content = content))
+            val userId = userPrefs.userId.first() ?: return@launch
+            val authorName = userRepository.getUserById(userId)?.fullName ?: "Anonymous"
+            
+            // Fetch post to get its Appwrite ID
+            val post = database.communityDao().getPostById(postId).first()
+            val postDocumentId = post?.appwriteId ?: ""
+            
+            communityRepository.addComment(userId.toString(), authorName, postDocumentId, postId, content)
         }
     }
 }

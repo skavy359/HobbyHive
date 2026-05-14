@@ -35,8 +35,16 @@ data class GoalWithHobby(
 class GoalsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = HobbyHiveDatabase.getDatabase(application)
-    val goalRepository = GoalRepository(database.goalDao())
-    val hobbyRepository = HobbyRepository(database.hobbyDao())
+    private val userPrefs = com.example.hobbyhive.data.UserPreferencesRepository(application)
+    
+    val goalRepository = com.example.hobbyhive.appwrite.repository.AppwriteGoalRepository(
+        database.goalDao(),
+        userPrefs
+    )
+    val hobbyRepository = com.example.hobbyhive.appwrite.repository.AppwriteHobbyRepository(
+        database.hobbyDao(),
+        userPrefs
+    )
 
     private val _uiState = MutableStateFlow(GoalsUiState())
     val uiState: StateFlow<GoalsUiState> = _uiState.asStateFlow()
@@ -45,6 +53,14 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
         loadGoals()
         loadHobbies()
         loadCounts()
+        
+        // Initial sync
+        viewModelScope.launch {
+            val userId = userPrefs.appwriteUserId.first()
+            if (!userId.isNullOrEmpty()) {
+                goalRepository.fetchAndSync(userId)
+            }
+        }
     }
 
     private fun loadGoals() {
@@ -87,8 +103,15 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
         targetValue: Int, unit: String, deadline: Long?
     ) {
         viewModelScope.launch {
-            goalRepository.insertGoal(
-                Goal(
+            // Find hobby documentId for linking
+            val hobby = database.hobbyDao().getHobbyById(hobbyId).first()
+            val hobbyDocId = hobby?.appwriteId ?: ""
+            val userId = userPrefs.appwriteUserId.first() ?: ""
+
+            goalRepository.createGoal(
+                userId = userId,
+                hobbyDocumentId = hobbyDocId,
+                goal = Goal(
                     hobbyId = hobbyId, title = title, description = description,
                     targetValue = targetValue, unit = unit, deadline = deadline
                 )
@@ -104,14 +127,15 @@ class GoalsViewModel(application: Application) : AndroidViewModel(application) {
                 goal.deadline != null && goal.deadline < System.currentTimeMillis() && newValue < goal.targetValue -> GoalStatus.FAILED
                 else -> goal.status
             }
-            goalRepository.updateGoal(goal.copy(currentValue = newValue, status = status))
+            val updated = goal.copy(currentValue = newValue, status = status, updatedAt = System.currentTimeMillis())
+            goalRepository.updateGoal(goal.appwriteId ?: "", updated)
             if (status == GoalStatus.COMPLETED) showSuccess("Goal completed! 🎉")
         }
     }
 
     fun deleteGoal(goal: Goal) {
         viewModelScope.launch {
-            goalRepository.deleteGoal(goal)
+            goalRepository.deleteGoal(goal.appwriteId ?: "", goal)
             showSuccess("Goal deleted")
         }
     }

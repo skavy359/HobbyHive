@@ -37,6 +37,7 @@ enum class GoalStatus(val displayName: String) {
 data class Goal(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val appwriteId: String? = null,
     val hobbyId: Long,
     val title: String,
     val description: String = "",

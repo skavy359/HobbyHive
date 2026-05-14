@@ -24,6 +24,7 @@ import androidx.room.PrimaryKey
 data class Session(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val appwriteId: String? = null,
     val hobbyId: Long,
     val durationMinutes: Int,
     val sessionDate: Long,              // Date of the session (millis)

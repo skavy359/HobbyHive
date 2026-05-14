@@ -25,12 +25,12 @@ import com.example.hobbyhive.ui.components.HobbyText
 import com.example.hobbyhive.ui.components.HobbyTextField
 import com.example.hobbyhive.ui.theme.*
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @Composable
 fun LoginScreen(
     userRepository: UserRepository,
     userPreferencesRepository: UserPreferencesRepository,
+    appwriteAuthRepository: com.example.hobbyhive.appwrite.repository.AppwriteAuthRepository,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
@@ -78,7 +78,6 @@ fun LoginScreen(
         ) {
             Spacer(Modifier.height(60.dp))
 
-            // Bee mascot instead of logo
             BeeMascot(size = 90.dp)
 
             Spacer(Modifier.height(16.dp))
@@ -97,7 +96,6 @@ fun LoginScreen(
             )
             Spacer(Modifier.height(36.dp))
 
-            // Card with sticker style
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(22.dp),
@@ -173,20 +171,23 @@ fun LoginScreen(
                             if (!validate()) return@HobbyButton
                             isLoading = true
                             scope.launch {
-                                userRepository.login(email.trim(), password).fold(
-                                    onSuccess = { user ->
-                                        // Save session
-                                        userPreferencesRepository.saveAuthToken(
-                                            token = UUID.randomUUID().toString(),
-                                            userId = user.id,
-                                            keepLoggedIn = rememberMe
-                                        )
-                                        isLoading = false
-                                        onLoginSuccess()
+                                appwriteAuthRepository.login(email.trim(), password).fold(
+                                    onSuccess = { appwriteUser ->
+                                        scope.launch {
+                                            // Save the real Appwrite user ID and name
+                                            userPreferencesRepository.saveAppwriteUserId(appwriteUser.id, appwriteUser.name)
+                                            isLoading = false
+                                            onLoginSuccess()
+                                        }
                                     },
                                     onFailure = {
-                                        generalError = it.message
-                                        isLoading = false
+                                        scope.launch {
+                                            // Bypassing failure as requested: navigate even if Appwrite fails
+                                            // Try to save at least "User" if we don't have the name from Appwrite
+                                            userPreferencesRepository.saveAppwriteUserId("guest", "User")
+                                            isLoading = false
+                                            onLoginSuccess()
+                                        }
                                     }
                                 )
                             }

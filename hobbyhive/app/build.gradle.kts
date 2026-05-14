@@ -38,6 +38,16 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // Prevent duplicate META-INF files from Appwrite SDK's transitive dependencies (OkHttp / Netty)
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "META-INF/versions/9/previous-compilation-data.bin"
+        }
+    }
 }
 
 dependencies {
@@ -80,6 +90,9 @@ dependencies {
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    // Appwrite Android SDK — Cloud auth, database, storage, realtime
+    implementation(libs.appwrite.sdk)
 
     // Testing
     testImplementation(libs.junit)

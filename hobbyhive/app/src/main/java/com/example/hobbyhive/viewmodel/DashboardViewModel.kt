@@ -48,11 +48,13 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun loadDashboard() {
         viewModelScope.launch {
-            // Load user name
-            val userId = userPreferencesRepository.userId.first()
-            val user = userId?.let { userRepository.getUserById(it) }
-            _uiState.update { it.copy(userName = user?.fullName ?: "User") }
+            // Load user name from DataStore
+            userPreferencesRepository.userName.collect { name ->
+                _uiState.update { it.copy(userName = name) }
+            }
+        }
 
+        viewModelScope.launch {
             // Combine hobby stats
             combine(
                 hobbyRepository.getHobbyCount(),

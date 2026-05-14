@@ -21,11 +21,26 @@ data class HobbyUiState(
 
 class HobbyViewModel(application: Application) : AndroidViewModel(application) {
     private val database = HobbyHiveDatabase.getDatabase(application)
-    val hobbyRepository = HobbyRepository(database.hobbyDao())
+    val userPrefs = com.example.hobbyhive.data.UserPreferencesRepository(application)
+    // Appwrite replaces the local Room HobbyRepository
+    val hobbyRepository = com.example.hobbyhive.appwrite.repository.AppwriteHobbyRepository(
+        database.hobbyDao(),
+        userPrefs
+    )
 
     private val _selectedTab = MutableStateFlow(0)
     private val _searchQuery = MutableStateFlow("")
     private val _isGridView = MutableStateFlow(false)
+
+    init {
+        viewModelScope.launch {
+            val userId = userPrefs.userId.first()
+            if (userId != null) {
+                // Keep Room cache fresh from Appwrite Cloud
+                hobbyRepository.fetchAndSync(userId.toString())
+            }
+        }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HobbyUiState> = combine(
@@ -36,9 +51,11 @@ class HobbyViewModel(application: Application) : AndroidViewModel(application) {
                 hobbyRepository.searchHobbies(query)
             } else {
                 when (tab) {
-                    1 -> hobbyRepository.getHobbiesByStatus(HobbyStatus.ACTIVE)
-                    2 -> hobbyRepository.getHobbiesByStatus(HobbyStatus.COMPLETED)
-                    3 -> hobbyRepository.getHobbiesByStatus(HobbyStatus.ARCHIVED)
+                    // TODO: Replace with Appwrite queries if filtering on the cloud is desired.
+                    // For now, since we sync all hobbies to Room, we can still use the Room queries.
+                    1 -> database.hobbyDao().getHobbiesByStatus(HobbyStatus.ACTIVE)
+                    2 -> database.hobbyDao().getHobbiesByStatus(HobbyStatus.COMPLETED)
+                    3 -> database.hobbyDao().getHobbiesByStatus(HobbyStatus.ARCHIVED)
                     else -> hobbyRepository.getAllHobbies()
                 }
             }
@@ -53,6 +70,9 @@ class HobbyViewModel(application: Application) : AndroidViewModel(application) {
     fun toggleGridView() { _isGridView.value = !_isGridView.value }
 
     fun deleteHobby(hobby: Hobby) {
-        viewModelScope.launch { hobbyRepository.deleteHobby(hobby) }
+        viewModelScope.launch {
+            // Document ID is temporarily stored in imageUri, or empty if it was created offline only
+            hobbyRepository.deleteHobby(hobby.imageUri ?: "", hobby)
+        }
     }
 }

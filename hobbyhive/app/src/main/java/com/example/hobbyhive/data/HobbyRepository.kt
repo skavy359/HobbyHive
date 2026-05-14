@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.Flow
 // Hobby Repository — Clean API for ViewModels
 // ═══════════════════════════════════════════════════
 
-class HobbyRepository(private val hobbyDao: HobbyDao) {
+open class HobbyRepository(protected val hobbyDao: HobbyDao) {
 
-    fun getAllHobbies(): Flow<List<Hobby>> = hobbyDao.getAllHobbies()
+    open fun getAllHobbies(): Flow<List<Hobby>> = hobbyDao.getAllHobbies()
 
-    fun getHobbyById(id: Long): Flow<Hobby?> = hobbyDao.getHobbyById(id)
+    open fun getHobbyById(id: Long): Flow<Hobby?> = hobbyDao.getHobbyById(id)
 
     suspend fun getHobbyByIdOnce(id: Long): Hobby? = hobbyDao.getHobbyByIdOnce(id)
 
@@ -23,7 +23,7 @@ class HobbyRepository(private val hobbyDao: HobbyDao) {
     fun getHobbiesByCategory(category: HobbyCategory): Flow<List<Hobby>> =
         hobbyDao.getHobbiesByCategory(category)
 
-    fun searchHobbies(query: String): Flow<List<Hobby>> = hobbyDao.searchHobbies(query)
+    open fun searchHobbies(query: String): Flow<List<Hobby>> = hobbyDao.searchHobbies(query)
 
     fun getHobbyCount(): Flow<Int> = hobbyDao.getHobbyCount()
 
@@ -32,13 +32,13 @@ class HobbyRepository(private val hobbyDao: HobbyDao) {
 
     fun getAverageRating(): Flow<Float?> = hobbyDao.getAverageRating()
 
-    suspend fun insertHobby(hobby: Hobby): Long = hobbyDao.insert(hobby)
+    open suspend fun insertHobby(hobby: Hobby): Long = hobbyDao.insert(hobby)
 
-    suspend fun updateHobby(hobby: Hobby) = hobbyDao.update(
+    open suspend fun updateHobby(hobby: Hobby) = hobbyDao.update(
         hobby.copy(updatedAt = System.currentTimeMillis())
     )
 
-    suspend fun deleteHobby(hobby: Hobby) = hobbyDao.delete(hobby)
+    open suspend fun deleteHobby(hobby: Hobby) = hobbyDao.delete(hobby)
 
     suspend fun deleteHobbyById(id: Long) = hobbyDao.deleteById(id)
 }

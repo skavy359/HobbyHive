@@ -22,8 +22,9 @@ data class AuthUiState(
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = HobbyHiveDatabase.getDatabase(application)
-    val userRepository = UserRepository(database.userDao())
     val userPreferencesRepository = UserPreferencesRepository(application)
+    // Appwrite replaces the local Room UserRepository for authentication
+    val appwriteAuthRepository = com.example.hobbyhive.appwrite.repository.AppwriteAuthRepository()
 
     private val _loginState = MutableStateFlow(AuthUiState())
     val loginState: StateFlow<AuthUiState> = _loginState.asStateFlow()
@@ -35,10 +36,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loginState.value = AuthUiState(isLoading = true)
 
-            val result = userRepository.login(email, password)
+            val result = appwriteAuthRepository.login(email, password)
             result.fold(
                 onSuccess = { user ->
-                    // Generate simple auth token
+                    // Save the REAL Appwrite user ID so repositories can query by userId
+                    userPreferencesRepository.saveAppwriteUserId(user.id)
+                    userPreferencesRepository.saveAppwriteSession("active_session")
+                    // Keep dummy legacy token so UI doesn't break if it reads AUTH_TOKEN
                     val token = "${user.id}_${System.currentTimeMillis()}"
                     userPreferencesRepository.saveAuthToken(token, user.id, keepLoggedIn)
                     _loginState.value = AuthUiState(isSuccess = true)
@@ -54,9 +58,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _registerState.value = AuthUiState(isLoading = true)
 
-            val result = userRepository.register(fullName, email, password)
+            val result = appwriteAuthRepository.signUp(fullName, email, password)
             result.fold(
-                onSuccess = {
+                onSuccess = { user ->
+                    // Save the REAL Appwrite user ID so repositories can query by userId
+                    userPreferencesRepository.saveAppwriteUserId(user.id)
+                    userPreferencesRepository.saveAppwriteSession("active_session")
                     _registerState.value = AuthUiState(isSuccess = true)
                 },
                 onFailure = { error ->
@@ -68,6 +75,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun logout() {
         viewModelScope.launch {
+            appwriteAuthRepository.logout()
             userPreferencesRepository.clearAuth()
         }
     }

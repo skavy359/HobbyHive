@@ -7,9 +7,9 @@ import java.security.MessageDigest
 // User Repository — Auth logic with password hashing
 // ═══════════════════════════════════════════════════
 
-class UserRepository(private val userDao: UserDao) {
+open class UserRepository(protected val userDao: UserDao) {
 
-    suspend fun register(fullName: String, email: String, password: String): Result<User> {
+    open suspend fun register(fullName: String, email: String, password: String): Result<User> {
         // Check if user already exists
         val existing = userDao.getUserByEmail(email)
         if (existing != null) {
@@ -25,7 +25,7 @@ class UserRepository(private val userDao: UserDao) {
         return Result.success(user.copy(id = userId))
     }
 
-    suspend fun login(email: String, password: String): Result<User> {
+    open suspend fun login(email: String, password: String): Result<User> {
         val user = userDao.getUserByEmail(email)
             ?: return Result.failure(Exception("No account found with this email"))
 
@@ -36,11 +36,11 @@ class UserRepository(private val userDao: UserDao) {
         return Result.success(user)
     }
 
-    suspend fun getUserById(userId: Long): User? = userDao.getUserById(userId)
+    open suspend fun getUserById(userId: Long): User? = userDao.getUserById(userId)
 
-    fun getUserByIdFlow(userId: Long) = userDao.getUserByIdFlow(userId)
+    open fun getUserByIdFlow(userId: Long) = userDao.getUserByIdFlow(userId)
 
-    suspend fun updateProfile(userId: Long, fullName: String, about: String): Result<User> {
+    open suspend fun updateProfile(userId: Long, fullName: String, about: String): Result<User> {
         val user = userDao.getUserById(userId)
             ?: return Result.failure(Exception("User not found"))
         val updated = user.copy(fullName = fullName, about = about)
@@ -48,7 +48,7 @@ class UserRepository(private val userDao: UserDao) {
         return Result.success(updated)
     }
 
-    suspend fun changePassword(userId: Long, oldPassword: String, newPassword: String): Result<Unit> {
+    open suspend fun changePassword(userId: Long, oldPassword: String, newPassword: String): Result<Unit> {
         val user = userDao.getUserById(userId)
             ?: return Result.failure(Exception("User not found"))
 
@@ -63,11 +63,11 @@ class UserRepository(private val userDao: UserDao) {
         return Result.success(Unit)
     }
 
-    suspend fun deleteAccount(userId: Long) {
+    open suspend fun deleteAccount(userId: Long) {
         userDao.deleteById(userId)
     }
 
-    private fun hashPassword(password: String): String {
+    protected fun hashPassword(password: String): String {
         val bytes = java.security.MessageDigest.getInstance("SHA-256").digest(password.toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
     }

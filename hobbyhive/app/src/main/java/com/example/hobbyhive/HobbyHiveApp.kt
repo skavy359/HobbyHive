@@ -15,6 +15,7 @@ class HobbyHiveApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        com.example.hobbyhive.appwrite.AppwriteClient.init(this)
         createNotificationChannels()
     }
 

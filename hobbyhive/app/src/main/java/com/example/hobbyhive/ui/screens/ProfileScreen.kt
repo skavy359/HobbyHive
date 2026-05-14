@@ -46,17 +46,21 @@ fun ProfileScreen(
     val activeCount by hobbyRepository.getHobbyCountByStatus(HobbyStatus.ACTIVE).collectAsState(initial = 0)
     val completedCount by hobbyRepository.getHobbyCountByStatus(HobbyStatus.COMPLETED).collectAsState(initial = 0)
     
+    val userNamePreference by userPreferencesRepository.userName.collectAsState(initial = "User")
     var userName by remember { mutableStateOf("") }
     var userEmail by remember { mutableStateOf("") }
     var userAbout by remember { mutableStateOf("Lifelong learner and hobby enthusiast.") }
     var joinDate by remember { mutableStateOf("") }
+
+    LaunchedEffect(userNamePreference) {
+        userName = userNamePreference
+    }
 
     LaunchedEffect(Unit) {
         val userId = userPreferencesRepository.userId.first()
         if (userId != null) {
             val user = userRepository.getUserById(userId)
             if (user != null) {
-                userName = user.fullName
                 userEmail = user.email
                 if (user.about.isNotBlank()) userAbout = user.about
                 joinDate = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date(user.createdAt))
@@ -95,11 +99,17 @@ fun ProfileScreen(
                 TextButton(onClick = {
                     scope.launch {
                         val userId = userPreferencesRepository.userId.first()
+                        val appwriteId = userPreferencesRepository.appwriteUserId.first() ?: "guest"
+                        
+                        // Update DataStore name
+                        userPreferencesRepository.saveAppwriteUserId(appwriteId, editName.trim())
+                        
                         if (userId != null) {
                             userRepository.updateProfile(userId, editName.trim(), editAbout.trim())
-                            userName = editName.trim()
-                            userAbout = editAbout.trim()
                         }
+                        
+                        userName = editName.trim()
+                        userAbout = editAbout.trim()
                         showEditDialog = false
                     }
                 }) { Text("Save", fontWeight = FontWeight.Bold) }
